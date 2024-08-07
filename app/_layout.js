@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,12 +7,12 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/useColorScheme";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { ImageBackground, View, StyleSheet } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
+import "react-native-reanimated";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -39,7 +40,44 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen
           name="(tabs)"
-          options={{ headerShown: false, presentation: "card" }}
+          options={{
+            headerShown: true,
+            presentation: "card",
+            headerTitle: "",
+            headerBackground: () => (
+              <ImageBackground
+                source={require("../assets/images/birthday-doodle.png")}
+                style={styles.headerBackground}
+                resizeMode="cover"
+              >
+                <View style={styles.overlay} />
+              </ImageBackground>
+            ),
+            headerLeft: () => (
+              <View
+                className="p-1 rounded-full "
+                style={{ backgroundColor: "rgba(226, 232, 240, 0.6)" }}
+              >
+                <Ionicons
+                  name="search"
+                  size={24}
+                  onPress={() => console.log("Search pressed")}
+                />
+              </View>
+            ),
+            headerRight: () => (
+              <View
+                className="bg-slate-200 bg-opacity-10 p-1 rounded-[50%] "
+                style={{ backgroundColor: "rgba(226, 232, 240, 0.6)" }}
+              >
+                <Ionicons
+                  name="add"
+                  size={24}
+                  onPress={() => console.log("Add pressed")}
+                />
+              </View>
+            ),
+          }}
         />
         <Stack.Screen
           name="addBirthdayModal"
@@ -63,3 +101,14 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  headerBackground: {
+    width: "100%",
+    height: 150,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 123, 255, 0.45)",
+  },
+});

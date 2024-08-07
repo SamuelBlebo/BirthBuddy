@@ -13,26 +13,10 @@ console.log(ParallaxScrollView, ThemedText, ThemedView, Items);
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#80BFFF", dark: "#6699CC" }}
-      headerImage={
-        <Image
-          className="w-full h-[200]"
-          source={require("../../assets/images/birthday-doodle.png")}
-          resizeMode="cover"
-        />
-      }
-    >
+    <ThemedView>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-      <ThemedView className="flex items-end">
-        <ThemedText>
-          <Link href="./addBirthdayModal">
-            <Ionicons name="add-outline" size={28} color="black" />
-          </Link>
-        </ThemedText>
-      </ThemedView>
       <Items />
-    </ParallaxScrollView>
+    </ThemedView>
   );
 }
 

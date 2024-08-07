@@ -9,20 +9,11 @@ import { ThemedView } from "@/components/ThemedView";
 
 export default function TabTwoScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#6699CC" }}
-      headerImage={
-        <Image
-          source={require("../../assets/images/birthday-doodle.png")}
-          style={styles.headerImage}
-          resizeMode="cover"
-        />
-      }
-    >
+    <ThemedView>
       <ThemedView>
-        <ThemedText className="font-bold">Settings</ThemedText>
+        <ThemedText className="font-bold h-full">Settings</ThemedText>
       </ThemedView>
-    </ParallaxScrollView>
+    </ThemedView>
   );
 }
 
