@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "expo-router";
-import { View, Text, StyleSheet, Button, Dimensions } from "react-native";
-import { FlashList } from "@shopify/flash-list";
+import { StyleSheet, Button, FlatList } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
@@ -64,13 +62,8 @@ export default function Items() {
     setEditing(null);
   };
   return (
-    <ThemedView
-      style={{
-        height: Dimensions.get("screen").height,
-        width: Dimensions.get("screen").width - 70,
-      }}
-    >
-      <FlashList
+    <ThemedView className="px-10 py-5 h-[100%]">
+      <FlatList
         data={items}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (

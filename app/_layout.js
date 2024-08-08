@@ -3,6 +3,8 @@ import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
+  Button,
+  ThemedText,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -73,7 +75,7 @@ export default function RootLayout() {
                 <Ionicons
                   name="add"
                   size={24}
-                  onPress={() => console.log("Add pressed")}
+                  onPress={() => navigation.navigate("addBirthdayModal")}
                 />
               </View>
             ),
@@ -88,8 +90,16 @@ export default function RootLayout() {
             headerTitle: "Add Birthday",
             headerLeft: () => (
               <Ionicons
-                name="arrow-back"
-                size={22}
+                name="close"
+                size={24}
+                style={{ marginLeft: 15 }}
+                onPress={() => navigation.goBack()}
+              />
+            ),
+            headerRight: () => (
+              <Ionicons
+                name="arrow-forward"
+                size={24}
                 style={{ marginLeft: 15 }}
                 onPress={() => navigation.goBack()}
               />
