@@ -3,15 +3,14 @@ import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
-  Button,
-  ThemedText,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useNavigation } from "@react-navigation/native";
-import { ImageBackground, View, StyleSheet } from "react-native";
+import { ImageBackground, View, StyleSheet, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ThemedText } from "@/components/ThemedText";
 
 import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -89,20 +88,25 @@ export default function RootLayout() {
             headerBackTitleVisible: false,
             headerTitle: "Add Birthday",
             headerLeft: () => (
-              <Ionicons
-                name="close"
-                size={24}
-                style={{ marginLeft: 15 }}
-                onPress={() => navigation.goBack()}
-              />
+              <ThemedText className=" text-[#6495ED]">
+                <Ionicons
+                  name="close"
+                  size={24}
+                  className=" text-[#6495ED]"
+                  style={{ marginLeft: 15 }}
+                  onPress={() => navigation.goBack()}
+                />
+              </ThemedText>
             ),
             headerRight: () => (
-              <Ionicons
-                name="arrow-forward"
-                size={24}
-                style={{ marginLeft: 15 }}
-                onPress={() => navigation.goBack()}
-              />
+              <View style={{ marginRight: 10 }}>
+                <ThemedText
+                  className="font-bold text-[#6495ED]"
+                  onPress={() => console.log("Saved")}
+                >
+                  Save
+                </ThemedText>
+              </View>
             ),
           }}
         />

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   TextInput,
-  Button,
   Text,
   Platform,
   Image,
@@ -15,14 +14,14 @@ import {
   useColorScheme,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedScrollView } from "@/components/ThemedScrollView";
 import Ionicons from "@expo/vector-icons/Ionicons";
+
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 // Function to calculate the zodiac sign based on date
 const getZodiacSign = (date) => {
@@ -63,8 +62,8 @@ export default function Modal() {
   const [notes, setNotes] = useState("");
   const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [showDatePicker, setShowDatePicker] = useState(true);
-  const [isEditing, setIsEditing] = useState(false); // State to toggle TextInput
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const textInputRef = useRef(null);
 
   useEffect(() => {
@@ -126,15 +125,21 @@ export default function Modal() {
   };
 
   const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setProfileImage(result.uri);
+      console.log(result);
+
+      if (!result.canceled && result.assets.length > 0) {
+        setProfileImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
     }
   };
 
@@ -148,133 +153,137 @@ export default function Modal() {
   const backgroundColor = colorScheme === "dark" ? "#151718" : "#f5f5f5";
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 px-[25px]"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ backgroundColor }}
-    >
-      <TouchableWithoutFeedback onPress={handleDismiss}>
-        <ThemedView>
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            style={{ backgroundColor }}
-          >
-            <View className="flex-1 py-10">
-              <TouchableOpacity
-                onPress={pickImage}
-                className="items-center mb-5"
-              >
-                {profileImage ? (
+    <KeyboardAwareScrollView className="px-5 ">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        style={{ backgroundColor }}
+        showsVerticalScrollIndicator={false}
+      >
+        <TouchableWithoutFeedback onPress={handleDismiss}>
+          <View className="flex-1  items-center py-10">
+            <TouchableOpacity
+              onPress={pickImage}
+              className=" h-32 w-32 items-center mb-5"
+            >
+              {profileImage ? (
+                <View className="w-32 h-32 rounded-full overflow-hidden">
                   <Image
                     source={{ uri: profileImage }}
-                    className="w-24 h-24 rounded-full"
+                    className="w-full h-full"
+                    style={{ resizeMode: "cover" }}
                   />
-                ) : (
-                  <View className="w-24 h-24 bg-gray-300 rounded-full justify-center items-center">
-                    <ThemedText className="text-white text-base">
-                      Add Picture
-                    </ThemedText>
-                  </View>
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setIsEditing(true)}>
-                {!isEditing ? (
-                  <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
-                    <ThemedText className="font-bold">Name</ThemedText>
-                    <ThemedText className="text-gray-400">
-                      {name || "Click to edit"}
-                    </ThemedText>
-                  </ThemedView>
-                ) : (
-                  <ThemedView className="flex flex-row rounded-[12px] h-[60px] px-4 mb-4">
-                    <TextInput
-                      ref={textInputRef}
-                      className="w-[100%]"
-                      placeholder="Name"
-                      value={name}
-                      onChangeText={setName}
-                      onBlur={() => setIsEditing(false)}
-                    />
-                  </ThemedView>
-                )}
-              </TouchableOpacity>
-
-              <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
-                <TouchableOpacity
-                  className="flex flex-row w-full justify-between items-center"
-                  onPress={() => {
-                    Keyboard.dismiss();
-                    setShowDatePicker((prev) => !prev);
-                  }}
+                </View>
+              ) : (
+                <View
+                  className={`w-32 h-32 rounded-full justify-center items-center ${
+                    colorScheme === "dark" ? "bg-gray-700" : "bg-gray-300"
+                  }`}
                 >
-                  <ThemedText className="font-bold">Birthday</ThemedText>
-                  <View className="flex flex-row items-center">
-                    <ThemedText className="text-gray-400 text-base">
-                      {birthday.toLocaleDateString()}
-                    </ThemedText>
-                    <Ionicons
-                      name={showDatePicker ? "chevron-down" : "chevron-forward"}
-                      size={20}
-                      color="black"
-                      style={{ marginLeft: 8 }}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </ThemedView>
+                  <ThemedText
+                    className={`text-base ${
+                      colorScheme === "dark" ? "text-gray-400" : "text-white"
+                    }`}
+                  >
+                    Add Picture
+                  </ThemedText>
+                </View>
+              )}
+            </TouchableOpacity>
 
-              {showDatePicker && (
-                <ThemedView className="rounded-[12px] px-4 mb-4">
-                  <DateTimePicker
-                    value={birthday}
-                    mode="date"
-                    display={Platform.OS === "ios" ? "spinner" : "default"}
-                    onChange={(event, selectedDate) => {
-                      if (selectedDate) {
-                        setBirthday(selectedDate);
-                        setZodiacSign(getZodiacSign(selectedDate));
-                      }
-                    }}
+            <TouchableOpacity onPress={() => setIsEditing(true)}>
+              {!isEditing ? (
+                <ThemedView className="w-[100%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+                  <ThemedText className="font-bold">Name</ThemedText>
+                  <ThemedText className="text-gray-400">
+                    {name || ""}
+                  </ThemedText>
+                </ThemedView>
+              ) : (
+                <ThemedView className="w-[100%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4">
+                  <TextInput
+                    ref={textInputRef}
+                    className="w-[100%]"
+                    placeholder="Name"
+                    value={name}
+                    onChangeText={setName}
+                    onBlur={() => setIsEditing(false)}
                   />
                 </ThemedView>
               )}
+            </TouchableOpacity>
 
-              <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
-                <ThemedText className="font-bold">Zodiac Sign</ThemedText>
-                <ThemedText className="text-gray-400 text-base">
-                  {zodiacSign}
-                </ThemedText>
-              </ThemedView>
+            <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+              <TouchableOpacity
+                className="flex flex-row w-full justify-between items-center"
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setShowDatePicker((prev) => !prev);
+                }}
+              >
+                <ThemedText className="font-bold">Birthday</ThemedText>
+                <View className="flex flex-row items-center">
+                  <ThemedText className="text-gray-400 text-base ">
+                    {birthday.toLocaleDateString()}
+                  </ThemedText>
+                  <Ionicons
+                    name={showDatePicker ? "chevron-down" : "chevron-forward"}
+                    size={20}
+                    color="#9ca3af"
+                    style={{ marginLeft: 8 }}
+                  />
+                </View>
+              </TouchableOpacity>
+            </ThemedView>
 
-              <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] py-4 px-4 mb-4">
-                <TextInput
-                  className="h-[100%] w-[100%]"
-                  placeholder="Note"
-                  value={notes}
-                  onChangeText={setNotes}
-                  multiline
-                  placeholderTextColor="#000" // Set the placeholder text color to black
-                  style={{ fontWeight: "bold" }} // Make the placeholder text bold
+            {showDatePicker && (
+              <ThemedView className="rounded-[12px] px-4 mb-4">
+                <DateTimePicker
+                  value={birthday}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  onChange={(event, selectedDate) => {
+                    if (selectedDate) {
+                      setBirthday(selectedDate);
+                      setZodiacSign(getZodiacSign(selectedDate));
+                    }
+                  }}
                 />
               </ThemedView>
+            )}
 
-              <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] px-4">
-                <ThemedText className="font-bold">Notification</ThemedText>
-                <Switch
-                  value={notificationEnabled}
-                  onValueChange={setNotificationEnabled}
-                />
-              </ThemedView>
+            <ThemedView className="w-[100%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+              <ThemedText className="font-bold">Zodiac Sign</ThemedText>
+              <ThemedText className="text-gray-400 text-base">
+                {zodiacSign}
+              </ThemedText>
+            </ThemedView>
 
-              <Link href="../" className="mt-5 text-blue-500 text-center">
-                Dismiss
-              </Link>
-              <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-            </View>
-          </ScrollView>
-        </ThemedView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+            <ThemedView className="w-[100%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+              <ThemedText className="font-bold">Notification</ThemedText>
+              <Switch
+                value={notificationEnabled}
+                onValueChange={setNotificationEnabled}
+                trackColor={{ true: "#6495ED" }}
+              />
+            </ThemedView>
+
+            <ThemedView className="w-[100%]  flex-row items-center justify-between rounded-[12px] h-[120px] py-4 px-4 mb-4">
+              <TextInput
+                className="h-[100%] w-[100%]"
+                placeholder="Note"
+                value={notes}
+                onChangeText={setNotes}
+                multiline
+                placeholderTextColor="#000" // Set the placeholder text color to black
+                style={{ fontWeight: "bold" }} // Make the placeholder text bold
+              />
+            </ThemedView>
+
+            <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
