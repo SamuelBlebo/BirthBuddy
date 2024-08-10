@@ -11,6 +11,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
+  Alert, // Import Alert for displaying messages
   useColorScheme,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -20,10 +21,9 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import SaveForm from "./components/SaveForm";
 
-// Function to calculate the zodiac sign based on date
 const getZodiacSign = (date) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -54,7 +54,7 @@ const getZodiacSign = (date) => {
 };
 
 export default function Modal() {
-  const colorScheme = useColorScheme(); // Get current color scheme
+  const colorScheme = useColorScheme();
   const [items, setItems] = useState([]);
   const [name, setName] = useState("");
   const [birthday, setBirthday] = useState(new Date());
@@ -84,34 +84,6 @@ export default function Modal() {
       }
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const saveItems = async (newItems) => {
-    try {
-      await AsyncStorage.setItem("birthdays", JSON.stringify(newItems));
-      setItems(newItems);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const addItem = () => {
-    if (name.trim()) {
-      const newItems = [
-        ...items,
-        {
-          id: Date.now().toString(),
-          name,
-          birthday: birthday.toLocaleDateString(),
-          zodiacSign,
-          notes,
-          notificationEnabled,
-          profileImage,
-        },
-      ];
-      saveItems(newItems);
-      resetForm();
     }
   };
 
@@ -149,25 +121,44 @@ export default function Modal() {
     setShowDatePicker(false);
   };
 
+  const handleSave = async () => {
+    // Validate form data
+    if (!name.trim() || !birthday) {
+      Alert.alert("Validation Error", "Name and Birthday are required fields.");
+      return;
+    }
+
+    const formData = {
+      name,
+      birthday,
+      zodiacSign,
+      notes,
+      notificationEnabled,
+      profileImage,
+    };
+
+    await SaveForm(formData); // Save the form data using SaveForm component
+    resetForm(); // Reset the form after saving
+  };
+
   // Determine background color based on the color scheme
-  const backgroundColor = colorScheme === "dark" ? "#151718" : "#f5f5f5";
+  const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <KeyboardAwareScrollView className="px-5 ">
+    <KeyboardAwareScrollView className="">
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
-        style={{ backgroundColor }}
         showsVerticalScrollIndicator={false}
       >
         <TouchableWithoutFeedback onPress={handleDismiss}>
-          <View className="flex-1  items-center py-10">
+          <View className="flex-1 items-center py-10">
             <TouchableOpacity
               onPress={pickImage}
-              className=" h-32 w-32 items-center mb-5"
+              className="h-32 w-32 items-center mb-5"
             >
               {profileImage ? (
-                <View className="w-32 h-32 rounded-full overflow-hidden">
+                <View className="w-32 h-32 rounded-full overflow-hidden ">
                   <Image
                     source={{ uri: profileImage }}
                     className="w-full h-full"
@@ -176,12 +167,12 @@ export default function Modal() {
                 </View>
               ) : (
                 <View
-                  className={`w-32 h-32 rounded-full justify-center items-center ${
+                  className={`w-32 h-32 rounded-full justify-center items-center shadow-md ${
                     colorScheme === "dark" ? "bg-gray-700" : "bg-gray-300"
                   }`}
                 >
                   <ThemedText
-                    className={`text-base ${
+                    className={`text-base shadow-md ${
                       colorScheme === "dark" ? "text-gray-400" : "text-white"
                     }`}
                   >
@@ -193,14 +184,14 @@ export default function Modal() {
 
             <TouchableOpacity onPress={() => setIsEditing(true)}>
               {!isEditing ? (
-                <ThemedView className="w-[100%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+                <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
                   <ThemedText className="font-bold">Name</ThemedText>
                   <ThemedText className="text-gray-400">
                     {name || ""}
                   </ThemedText>
                 </ThemedView>
               ) : (
-                <ThemedView className="w-[100%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4">
+                <ThemedView className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg">
                   <TextInput
                     ref={textInputRef}
                     className="w-[100%]"
@@ -213,7 +204,7 @@ export default function Modal() {
               )}
             </TouchableOpacity>
 
-            <ThemedView className="flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
               <TouchableOpacity
                 className="flex flex-row w-full justify-between items-center"
                 onPress={() => {
@@ -221,9 +212,9 @@ export default function Modal() {
                   setShowDatePicker((prev) => !prev);
                 }}
               >
-                <ThemedText className="font-bold">Birthday</ThemedText>
+                <ThemedText className="font-bold ">Birthday</ThemedText>
                 <View className="flex flex-row items-center">
-                  <ThemedText className="text-gray-400 text-base ">
+                  <ThemedText className="text-gray-400 text-base">
                     {birthday.toLocaleDateString()}
                   </ThemedText>
                   <Ionicons
@@ -237,7 +228,7 @@ export default function Modal() {
             </ThemedView>
 
             {showDatePicker && (
-              <ThemedView className="rounded-[12px] px-4 mb-4">
+              <ThemedView className="rounded-[12px] px-4 mb-4 shadow-md ">
                 <DateTimePicker
                   value={birthday}
                   mode="date"
@@ -252,14 +243,14 @@ export default function Modal() {
               </ThemedView>
             )}
 
-            <ThemedView className="w-[100%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
               <ThemedText className="font-bold">Zodiac Sign</ThemedText>
               <ThemedText className="text-gray-400 text-base">
                 {zodiacSign}
               </ThemedText>
             </ThemedView>
 
-            <ThemedView className="w-[100%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4">
+            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
               <ThemedText className="font-bold">Notification</ThemedText>
               <Switch
                 value={notificationEnabled}
@@ -268,7 +259,7 @@ export default function Modal() {
               />
             </ThemedView>
 
-            <ThemedView className="w-[100%]  flex-row items-center justify-between rounded-[12px] h-[120px] py-4 px-4 mb-4">
+            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[120px] py-4 px-4 mb-4 shadow-md">
               <TextInput
                 className="h-[100%] w-[100%]"
                 placeholder="Note"
@@ -279,6 +270,15 @@ export default function Modal() {
                 style={{ fontWeight: "bold" }} // Make the placeholder text bold
               />
             </ThemedView>
+
+            <TouchableOpacity
+              onPress={handleSave}
+              className="bg-blue-500 rounded-lg px-8 py-4 mt-4 shadow-md "
+            >
+              <ThemedText className="text-white text-center font-bold">
+                Save
+              </ThemedText>
+            </TouchableOpacity>
 
             <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
           </View>

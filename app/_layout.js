@@ -8,11 +8,9 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useNavigation } from "@react-navigation/native";
-import { ImageBackground, View, StyleSheet, Text } from "react-native";
+import { ImageBackground, View, StyleSheet } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { ThemedText } from "@/components/ThemedText";
-
-import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -97,16 +95,6 @@ export default function RootLayout() {
                   onPress={() => navigation.goBack()}
                 />
               </ThemedText>
-            ),
-            headerRight: () => (
-              <View style={{ marginRight: 10 }}>
-                <ThemedText
-                  className="font-bold text-[#6495ED]"
-                  onPress={() => console.log("Saved")}
-                >
-                  Save
-                </ThemedText>
-              </View>
             ),
           }}
         />

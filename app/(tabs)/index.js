@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, Platform } from "react-native";
+import { Image, StyleSheet, Platform, Text } from "react-native";
 import { Link } from "expo-router";
 
 import { StatusBar } from "expo-status-bar";
@@ -13,9 +13,9 @@ console.log(ParallaxScrollView, ThemedText, ThemedView, Items);
 
 export default function HomeScreen() {
   return (
-    <ThemedView>
+    <ThemedView className=" h-[100vh]">
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-      <Items />
+      <Text>Home</Text>
     </ThemedView>
   );
 }
