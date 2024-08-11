@@ -98,6 +98,14 @@ export default function RootLayout() {
             ),
           }}
         />
+        <Stack.Screen
+          name="editbirthday"
+          options={{
+            // Set the presentation mode to modal for our modal route.
+            headerTitle: "Edit Birthday",
+            presentation: "card",
+          }}
+        />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>
