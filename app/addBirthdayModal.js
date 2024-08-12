@@ -23,6 +23,7 @@ import { ThemedText } from "@/components/ThemedText";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import SaveForm from "./components/SaveForm";
+import { useNavigation } from "@react-navigation/native";
 
 const getZodiacSign = (date) => {
   const day = date.getDate();
@@ -65,6 +66,7 @@ export default function Modal() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const textInputRef = useRef(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (isEditing && textInputRef.current) {
@@ -139,6 +141,7 @@ export default function Modal() {
 
     await SaveForm(formData); // Save the form data using SaveForm component
     resetForm(); // Reset the form after saving
+    navigation.goBack();
   };
 
   // Determine background color based on the color scheme
@@ -259,15 +262,14 @@ export default function Modal() {
               />
             </ThemedView>
 
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[120px] py-4 px-4 mb-4 shadow-md">
+            <ThemedView className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
+              <ThemedText className="font-bold">Notes</ThemedText>
               <TextInput
-                className="h-[100%] w-[100%]"
-                placeholder="Note"
+                className="flex-1"
                 value={notes}
                 onChangeText={setNotes}
+                placeholder="Add notes..."
                 multiline
-                placeholderTextColor="#000" // Set the placeholder text color to black
-                style={{ fontWeight: "bold" }} // Make the placeholder text bold
               />
             </ThemedView>
 
