@@ -14,7 +14,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useFocusEffect } from "@react-navigation/native";
 
-const Items = () => {
+const UpcomingBirthdays = () => {
   const [items, setItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const colorScheme = useColorScheme();
@@ -72,7 +72,7 @@ const Items = () => {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <ThemedView className=" px-4 py-8 mb-10">
+    <ThemedView className="px-4 py-8 my-10">
       <FlatList
         data={items}
         keyExtractor={(item, index) => item.name + index}
@@ -144,4 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Items;
+export default UpcomingBirthdays;

@@ -25,6 +25,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import SaveForm from "./components/SaveForm";
 import { useNavigation } from "@react-navigation/native";
 
+const currentYear = new Date().getFullYear();
+const years = [...Array(currentYear - 1899).keys()]
+  .map((i) => i + 1900)
+  .concat("--"); // Years from 1900 to current year + "--"
+
 const getZodiacSign = (date) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
@@ -229,13 +234,14 @@ export default function Modal() {
                 </View>
               </TouchableOpacity>
             </ThemedView>
-
             {showDatePicker && (
               <ThemedView className="rounded-[12px] px-4 mb-4 shadow-md ">
                 <DateTimePicker
                   value={birthday}
                   mode="date"
                   display={Platform.OS === "ios" ? "spinner" : "default"}
+                  minimumDate={new Date("1900-01-01")} // Set the minimum year to 1900
+                  maximumDate={new Date()} // Set the maximum date to the current date
                   onChange={(event, selectedDate) => {
                     if (selectedDate) {
                       setBirthday(selectedDate);
@@ -245,7 +251,6 @@ export default function Modal() {
                 />
               </ThemedView>
             )}
-
             <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
               <ThemedText className="font-bold">Zodiac Sign</ThemedText>
               <ThemedText className="text-gray-400 text-base">
