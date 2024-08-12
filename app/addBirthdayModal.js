@@ -265,7 +265,7 @@ export default function Modal() {
             <ThemedView className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
               <ThemedText className="font-bold">Notes</ThemedText>
               <TextInput
-                className="flex-1"
+                className="w-[100%] h-[100%]"
                 value={notes}
                 onChangeText={setNotes}
                 placeholder="Add notes..."

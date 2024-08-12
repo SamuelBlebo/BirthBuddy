@@ -122,6 +122,39 @@ export default function EditBirthday() {
       console.error("Error saving edited birthday:", error);
     }
   };
+  const handleDelete = async () => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this birthday?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              const storedItems = await AsyncStorage.getItem("birthdays");
+              const parsedItems = storedItems ? JSON.parse(storedItems) : [];
+              const updatedItems = parsedItems.filter((item) => item.id !== id);
+
+              await AsyncStorage.setItem(
+                "birthdays",
+                JSON.stringify(updatedItems)
+              );
+              Alert.alert("Success", "Birthday deleted successfully");
+              router.back();
+            } catch (error) {
+              console.error("Error deleting birthday:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   const pickImage = async () => {
     try {
@@ -264,7 +297,7 @@ export default function EditBirthday() {
             <ThemedView className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
               <ThemedText className="font-bold">Notes</ThemedText>
               <TextInput
-                className="flex-1"
+                className="flex-1 w-[100%] h-[100%]"
                 value={notes}
                 onChangeText={setNotes}
                 placeholder="Add notes..."
@@ -272,12 +305,12 @@ export default function EditBirthday() {
               />
             </ThemedView>
 
-            <ThemedText className="mt-10">
+            <ThemedText className="mt-5">
               <ThemedText>
                 <Button title="Update" onPress={handleSaveEdit} />
               </ThemedText>
               <ThemedText>
-                <Button title="Cancel" onPress={() => router.back()} />
+                <Button color="red" title="Delete" onPress={handleDelete} />
               </ThemedText>
             </ThemedText>
           </View>
