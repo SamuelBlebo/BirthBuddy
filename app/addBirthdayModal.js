@@ -112,8 +112,6 @@ export default function Modal() {
         quality: 1,
       });
 
-      console.log(result);
-
       if (!result.canceled && result.assets.length > 0) {
         setProfileImage(result.assets[0].uri);
       }
@@ -153,7 +151,7 @@ export default function Modal() {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <KeyboardAwareScrollView className="">
+    <KeyboardAwareScrollView>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"

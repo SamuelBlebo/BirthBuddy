@@ -72,18 +72,17 @@ const UpcomingBirthdays = () => {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <ThemedView className="px-4 py-8 my-10">
+    <ThemedView className="px-4 py-8">
       <FlatList
         data={items}
         keyExtractor={(item, index) => item.name + index}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
-          console.log("Navigating to edit birthday with ID:", item.id); // Debugging ID
           return (
             <Link href={`/editbirthday?id=${item.id}`}>
               <ThemedView
                 style={{ backgroundColor }}
-                className="w-[100%] flex flex-row justify-between items-center rounded-[10px] mb-4 p-4  shadow-sm"
+                className="w-[100%] flex flex-row justify-between items-center rounded-[10px] mb-4 p-4  shadow-sm "
               >
                 <View className="flex flex-row items-center shadow-sm">
                   {item.profileImage ? (
