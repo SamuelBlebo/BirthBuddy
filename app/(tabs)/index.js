@@ -4,6 +4,7 @@ import { Platform, Text, ScrollView, View, useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
 import UpcomingBirthdays from "../components/UpcomingBirthdays";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -72,7 +73,8 @@ export default function HomeScreen() {
     const diffInMilliseconds = nextBirthday - today;
     return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
   };
-
+  const textColor = colorScheme === "dark" ? "#fff" : "#000";
+  const iconColor = colorScheme === "dark" ? "#fff" : "#000";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
@@ -82,9 +84,11 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       <ThemedView className="h-[100%]">
-        <View className="px-5 mb-2 mt-5">
-          <Text className="font-bold text-[34px]">Upcoming</Text>
-        </View>
+        <ThemedView className="px-5 mb-2 mt-5">
+          <Text className="font-bold text-[34px] " style={{ color: textColor }}>
+            Upcoming
+          </Text>
+        </ThemedView>
 
         <View className="h-[130px] ">
           <ScrollView
@@ -97,10 +101,13 @@ export default function HomeScreen() {
                 style={{ backgroundColor }}
                 className="w-[150px] h-[100px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
               >
-                <Text className="font-bold text-[50px]">
+                <Text
+                  className="font-bold text-[50px]"
+                  style={{ color: textColor }}
+                >
                   {birthdaysInMonth}
                 </Text>
-                <Text>
+                <Text className="text-gray-400">
                   Birthdays in{" "}
                   {new Date().toLocaleString("en-US", { month: "long" })}
                 </Text>
@@ -109,10 +116,13 @@ export default function HomeScreen() {
                 style={{ backgroundColor }}
                 className="w-[150px] h-[100px] flex justify-center items-center rounded-[20px]  mr-4 shadow-md"
               >
-                <Text className="font-bold text-[50px]">
+                <Text
+                  className="font-bold text-[50px]"
+                  style={{ color: textColor }}
+                >
                   {daysToNextBirthday}
                 </Text>
-                <Text>Days to next birthday</Text>
+                <Text className="text-gray-400">Days to next birthday</Text>
               </ThemedView>
 
               <ThemedView
@@ -122,9 +132,10 @@ export default function HomeScreen() {
                 <Ionicons
                   name="arrow-forward"
                   size={50}
+                  color={iconColor}
                   onPress={() => router.push("/all")} // Navigate to the "All" tab
                 />
-                <Text>View All</Text>
+                <Text className="text-gray-400">View All</Text>
               </ThemedView>
             </ThemedView>
           </ScrollView>
