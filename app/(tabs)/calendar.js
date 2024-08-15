@@ -1,25 +1,14 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Image, Platform } from "react-native";
+import { StyleSheet, Image, Platform, View } from "react-native";
 
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import BirthdayCalender from "../components/Calendar";
 
 export default function TabTwoScreen() {
   return (
-    <ThemedView>
-      <ThemedView>
-        <ThemedText className="font-bold h-full">Calendar</ThemedText>
-      </ThemedView>
-    </ThemedView>
+    <View className="h-[100%] flex-1 justify-center ">
+      <BirthdayCalender />
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  headerImage: {
-    width: "100%",
-    height: 200,
-  },
-});
+const styles = StyleSheet.create({});

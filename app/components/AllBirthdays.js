@@ -10,8 +10,6 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useFocusEffect } from "@react-navigation/native";
 
 const AllBirthdays = () => {
@@ -84,25 +82,25 @@ const AllBirthdays = () => {
     return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
   }
 
+  const textColor = colorScheme === "dark" ? "#fff" : "#555";
+  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <ThemedView className="px-4 py-8">
+    <View className="px-4 py-8">
       <FlatList
         data={items}
         keyExtractor={(item, index) => item.title + index}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View key={item.title}>
-            <ThemedText className="text-x text-gray-400  mb-2">
-              {item.title}
-            </ThemedText>
+            <Text className="text-x text-gray-400  mb-2">{item.title}</Text>
             {item.data.map((birthdayItem, index) => (
               <Link
                 key={birthdayItem.name + index}
                 href={`/editbirthday?id=${birthdayItem.id}`}
               >
-                <ThemedView
+                <View
                   style={{ backgroundColor }}
                   className="w-[100%] flex flex-row justify-between items-center rounded-[10px] mb-4 p-4 shadow-sm"
                 >
@@ -121,29 +119,32 @@ const AllBirthdays = () => {
                       />
                     )}
                     <View className="pl-2 flex justify-between">
-                      <ThemedText style={styles.name} className="mb-[6px]">
+                      <Text
+                        style={{ color: textColor }}
+                        className="mb-[6px] text-[18px] font-[600]"
+                      >
                         {birthdayItem.name || "No Name"}
-                      </ThemedText>
-                      <ThemedText>
+                      </Text>
+                      <Text className="text-gray-400">
                         {birthdayItem.birthday
                           ? new Date(birthdayItem.birthday).toLocaleDateString()
                           : "No Birthday"}
-                      </ThemedText>
+                      </Text>
                     </View>
                   </View>
                   <View className="flex justify-between items-end">
-                    <ThemedText className="font-semibold mb-[6px] text-gray-400">
+                    <Text className="font-semibold mb-[6px] text-gray-400">
                       {birthdayItem.birthday
                         ? `${daysUntilNextBirthday(
                             new Date(birthdayItem.birthday)
                           )} days`
                         : "No Birthday"}
-                    </ThemedText>
-                    <ThemedText className="font-semibold">
+                    </Text>
+                    <Text className="font-semibold">
                       {birthdayItem.zodiacSign || "No Zodiac Sign"}
-                    </ThemedText>
+                    </Text>
                   </View>
-                </ThemedView>
+                </View>
               </Link>
             ))}
           </View>
@@ -151,7 +152,7 @@ const AllBirthdays = () => {
         refreshing={refreshing}
         onRefresh={handleRefresh}
       />
-    </ThemedView>
+    </View>
   );
 };
 

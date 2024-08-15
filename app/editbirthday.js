@@ -18,8 +18,7 @@ import {
 import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
@@ -178,6 +177,8 @@ export default function EditBirthday() {
     setShowDatePicker(false);
   };
 
+  const textColor = colorScheme === "dark" ? "#fff" : "#555";
+  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
@@ -207,27 +208,29 @@ export default function EditBirthday() {
                     colorScheme === "dark" ? "bg-gray-700" : "bg-gray-300"
                   }`}
                 >
-                  <ThemedText
+                  <Text
                     className={`text-base shadow-md ${
                       colorScheme === "dark" ? "text-gray-400" : "text-white"
                     }`}
                   >
                     Add Picture
-                  </ThemedText>
+                  </Text>
                 </View>
               )}
             </TouchableOpacity>
-
             <TouchableOpacity onPress={() => setIsEditing(true)}>
               {!isEditing ? (
-                <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-                  <ThemedText className="font-bold">Name</ThemedText>
-                  <ThemedText className="text-gray-400">
-                    {name || ""}
-                  </ThemedText>
-                </ThemedView>
+                <View
+                  className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+                  style={{ backgroundColor }}
+                >
+                  <Text className="font-bold" style={{ color: textColor }}>
+                    Name
+                  </Text>
+                  <Text className="text-gray-400">{name || ""}</Text>
+                </View>
               ) : (
-                <ThemedView className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg">
+                <View className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg">
                   <TextInput
                     ref={textInputRef}
                     className="w-[100%]"
@@ -236,11 +239,13 @@ export default function EditBirthday() {
                     onChangeText={setName}
                     onBlur={() => setIsEditing(false)}
                   />
-                </ThemedView>
+                </View>
               )}
             </TouchableOpacity>
-
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
               <TouchableOpacity
                 className="flex flex-row w-full justify-between items-center"
                 onPress={() => {
@@ -248,11 +253,13 @@ export default function EditBirthday() {
                   setShowDatePicker((prev) => !prev);
                 }}
               >
-                <ThemedText className="font-bold ">Birthday</ThemedText>
+                <Text className="font-bold " style={{ color: textColor }}>
+                  Birthday
+                </Text>
                 <View className="flex flex-row items-center">
-                  <ThemedText className="text-gray-400 text-base">
+                  <Text className="text-gray-400 text-base">
                     {birthday.toLocaleDateString()}
-                  </ThemedText>
+                  </Text>
                   <Ionicons
                     name={showDatePicker ? "chevron-down" : "chevron-forward"}
                     size={20}
@@ -261,10 +268,12 @@ export default function EditBirthday() {
                   />
                 </View>
               </TouchableOpacity>
-            </ThemedView>
-
+            </View>
             {showDatePicker && (
-              <ThemedView className="rounded-[12px] px-4 mb-4 shadow-md ">
+              <View
+                className="rounded-[12px] px-4 mb-4 shadow-md "
+                style={{ backgroundColor }}
+              >
                 <DateTimePicker
                   value={birthday}
                   mode="date"
@@ -276,26 +285,37 @@ export default function EditBirthday() {
                     }
                   }}
                 />
-              </ThemedView>
+              </View>
             )}
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold" style={{ color: textColor }}>
+                Zodiac Sign
+              </Text>
+              <Text className="text-gray-400 text-base">{zodiacSign}</Text>
+            </View>
 
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-              <ThemedText className="font-bold">Zodiac Sign</ThemedText>
-              <ThemedText className="text-gray-400 text-base">
-                {zodiacSign}
-              </ThemedText>
-            </ThemedView>
-
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-              <ThemedText className="font-bold">Notification</ThemedText>
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold" style={{ color: textColor }}>
+                Notification
+              </Text>
               <Switch
                 value={notificationEnabled}
                 onValueChange={setNotificationEnabled}
               />
-            </ThemedView>
-
-            <ThemedView className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
-              <ThemedText className="font-bold">Notes</ThemedText>
+            </View>
+            <View
+              className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold mt-2" style={{ color: textColor }}>
+                Notes
+              </Text>
               <TextInput
                 className="flex-1 w-[100%] h-[100%]"
                 value={notes}
@@ -303,16 +323,15 @@ export default function EditBirthday() {
                 placeholder="Add notes..."
                 multiline
               />
-            </ThemedView>
-
-            <ThemedText className="mt-5">
-              <ThemedText>
+            </View>
+            <Text className="mt-5">
+              <Text>
                 <Button title="Update" onPress={handleSaveEdit} />
-              </ThemedText>
-              <ThemedText>
+              </Text>
+              <Text>
                 <Button color="red" title="Delete" onPress={handleDelete} />
-              </ThemedText>
-            </ThemedText>
+              </Text>
+            </Text>
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>

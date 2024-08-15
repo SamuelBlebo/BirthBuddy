@@ -3,8 +3,6 @@ import { Tabs, useRouter } from "expo-router";
 import { Platform, Text, ScrollView, View, useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
 import UpcomingBirthdays from "../components/UpcomingBirthdays";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -73,8 +71,8 @@ export default function HomeScreen() {
     const diffInMilliseconds = nextBirthday - today;
     return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
   };
-  const textColor = colorScheme === "dark" ? "#fff" : "#000";
-  const iconColor = colorScheme === "dark" ? "#fff" : "#000";
+  const textColor = colorScheme === "dark" ? "#fff" : "#555";
+  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
@@ -83,12 +81,12 @@ export default function HomeScreen() {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
-      <ThemedView className="h-[100%]">
-        <ThemedView className="px-5 mb-2 mt-5">
+      <View className="h-[100%]">
+        <View className="px-5 mb-2 mt-5">
           <Text className="font-bold text-[34px] " style={{ color: textColor }}>
             Upcoming
           </Text>
-        </ThemedView>
+        </View>
 
         <View className="h-[130px] ">
           <ScrollView
@@ -96,8 +94,8 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ flexGrow: 1 }}
           >
-            <ThemedView className="flex-1 flex-row items-center px-5 ">
-              <ThemedView
+            <View className="flex-1 flex-row items-center px-5 ">
+              <View
                 style={{ backgroundColor }}
                 className="w-[150px] h-[100px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
               >
@@ -111,8 +109,8 @@ export default function HomeScreen() {
                   Birthdays in{" "}
                   {new Date().toLocaleString("en-US", { month: "long" })}
                 </Text>
-              </ThemedView>
-              <ThemedView
+              </View>
+              <View
                 style={{ backgroundColor }}
                 className="w-[150px] h-[100px] flex justify-center items-center rounded-[20px]  mr-4 shadow-md"
               >
@@ -123,9 +121,9 @@ export default function HomeScreen() {
                   {daysToNextBirthday}
                 </Text>
                 <Text className="text-gray-400">Days to next birthday</Text>
-              </ThemedView>
+              </View>
 
-              <ThemedView
+              <View
                 style={{ backgroundColor }}
                 className="w-[150px] h-[100px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
               >
@@ -136,14 +134,14 @@ export default function HomeScreen() {
                   onPress={() => router.push("/all")} // Navigate to the "All" tab
                 />
                 <Text className="text-gray-400">View All</Text>
-              </ThemedView>
-            </ThemedView>
+              </View>
+            </View>
           </ScrollView>
         </View>
 
         <UpcomingBirthdays />
         <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-      </ThemedView>
+      </View>
     </ScrollView>
   );
 }

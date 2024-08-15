@@ -1,20 +1,26 @@
 import { Tabs } from "expo-router";
 import React from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  useColorScheme,
+} from "react-native";
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: iconColor,
         headerShown: false,
       }}
     >

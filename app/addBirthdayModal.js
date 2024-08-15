@@ -18,8 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import SaveForm from "./components/SaveForm";
@@ -177,27 +176,25 @@ export default function Modal() {
                     colorScheme === "dark" ? "bg-gray-700" : "bg-gray-300"
                   }`}
                 >
-                  <ThemedText
+                  <Text
                     className={`text-base shadow-md ${
                       colorScheme === "dark" ? "text-gray-400" : "text-white"
                     }`}
                   >
                     Add Picture
-                  </ThemedText>
+                  </Text>
                 </View>
               )}
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setIsEditing(true)}>
               {!isEditing ? (
-                <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-                  <ThemedText className="font-bold">Name</ThemedText>
-                  <ThemedText className="text-gray-400">
-                    {name || ""}
-                  </ThemedText>
-                </ThemedView>
+                <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
+                  <Text className="font-bold">Name</Text>
+                  <Text className="text-gray-400">{name || ""}</Text>
+                </View>
               ) : (
-                <ThemedView className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg">
+                <View className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg">
                   <TextInput
                     ref={textInputRef}
                     className="w-[100%]"
@@ -206,11 +203,11 @@ export default function Modal() {
                     onChangeText={setName}
                     onBlur={() => setIsEditing(false)}
                   />
-                </ThemedView>
+                </View>
               )}
             </TouchableOpacity>
 
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
+            <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
               <TouchableOpacity
                 className="flex flex-row w-full justify-between items-center"
                 onPress={() => {
@@ -218,11 +215,11 @@ export default function Modal() {
                   setShowDatePicker((prev) => !prev);
                 }}
               >
-                <ThemedText className="font-bold ">Birthday</ThemedText>
+                <Text className="font-bold ">Birthday</Text>
                 <View className="flex flex-row items-center">
-                  <ThemedText className="text-gray-400 text-base">
+                  <Text className="text-gray-400 text-base">
                     {birthday.toLocaleDateString()}
-                  </ThemedText>
+                  </Text>
                   <Ionicons
                     name={showDatePicker ? "chevron-down" : "chevron-forward"}
                     size={20}
@@ -231,9 +228,9 @@ export default function Modal() {
                   />
                 </View>
               </TouchableOpacity>
-            </ThemedView>
+            </View>
             {showDatePicker && (
-              <ThemedView className="rounded-[12px] px-4 mb-4 shadow-md ">
+              <View className="rounded-[12px] px-4 mb-4 shadow-md ">
                 <DateTimePicker
                   value={birthday}
                   mode="date"
@@ -247,26 +244,24 @@ export default function Modal() {
                     }
                   }}
                 />
-              </ThemedView>
+              </View>
             )}
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-              <ThemedText className="font-bold">Zodiac Sign</ThemedText>
-              <ThemedText className="text-gray-400 text-base">
-                {zodiacSign}
-              </ThemedText>
-            </ThemedView>
+            <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
+              <Text className="font-bold">Zodiac Sign</Text>
+              <Text className="text-gray-400 text-base">{zodiacSign}</Text>
+            </View>
 
-            <ThemedView className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-              <ThemedText className="font-bold">Notification</ThemedText>
+            <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
+              <Text className="font-bold">Notification</Text>
               <Switch
                 value={notificationEnabled}
                 onValueChange={setNotificationEnabled}
                 trackColor={{ true: "#6495ED" }}
               />
-            </ThemedView>
+            </View>
 
-            <ThemedView className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
-              <ThemedText className="font-bold">Notes</ThemedText>
+            <View className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
+              <Text className="font-bold">Notes</Text>
               <TextInput
                 className="w-[100%] h-[100%]"
                 value={notes}
@@ -274,15 +269,13 @@ export default function Modal() {
                 placeholder="Add notes..."
                 multiline
               />
-            </ThemedView>
+            </View>
 
             <TouchableOpacity
               onPress={handleSave}
               className="bg-blue-500 rounded-lg px-8 py-4 mt-4 shadow-md "
             >
-              <ThemedText className="text-white text-center font-bold">
-                Save
-              </ThemedText>
+              <Text className="text-white text-center font-bold">Save</Text>
             </TouchableOpacity>
 
             <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />

@@ -8,10 +8,15 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useNavigation } from "@react-navigation/native";
-import { ImageBackground, View, StyleSheet } from "react-native";
+
+import {
+  ImageBackground,
+  View,
+  StyleSheet,
+  Text,
+  useColorScheme,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { ThemedText } from "@/components/ThemedText";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -86,7 +91,7 @@ export default function RootLayout() {
             headerBackTitleVisible: false,
             headerTitle: "Add Birthday",
             headerLeft: () => (
-              <ThemedText className=" text-[#6495ED]">
+              <Text className=" text-[#6495ED]">
                 <Ionicons
                   name="close"
                   size={24}
@@ -94,7 +99,7 @@ export default function RootLayout() {
                   style={{ marginLeft: 15 }}
                   onPress={() => navigation.goBack()}
                 />
-              </ThemedText>
+              </Text>
             ),
           }}
         />

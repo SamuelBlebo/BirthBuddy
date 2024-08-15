@@ -8,9 +8,6 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import AllBirthdays from "../components/AllBirthdays";
 
 export default function HomeScreen() {
@@ -20,7 +17,7 @@ export default function HomeScreen() {
   const iconColor = colorScheme === "dark" ? "#fff" : "#000";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
   return (
-    <ThemedView className="h-[100%]">
+    <View className="h-[100%]">
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       <View className="px-5 pt-8">
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
@@ -28,7 +25,7 @@ export default function HomeScreen() {
         </Text>
       </View>
       <AllBirthdays />
-    </ThemedView>
+    </View>
   );
 }
 
