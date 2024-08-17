@@ -15,7 +15,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
+  const iconColor = colorScheme === "dark" ? "#007bff" : "#007bff";
 
   return (
     <Tabs

@@ -36,6 +36,7 @@
     "react-dom": "^18.2.0",
     "react-native": "0.74.5",
     "react-native-avoid-softinput": "^5.0.0",
+    "react-native-big-calendar": "^4.14.0",
     "react-native-calendars": "^1.1306.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
