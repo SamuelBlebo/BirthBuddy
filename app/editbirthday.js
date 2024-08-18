@@ -307,6 +307,7 @@ export default function EditBirthday() {
               <Switch
                 value={notificationEnabled}
                 onValueChange={setNotificationEnabled}
+                trackColor={{ true: "#6495ED" }}
               />
             </View>
             <View

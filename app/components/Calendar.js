@@ -53,16 +53,10 @@ const BirthdayCalendar = () => {
       style={{ backgroundColor }}
       className="h-[100%]"
     >
-      <View className="px-10 mb-2 mt-10">
-        <Text className="font-bold text-[34px] " style={{ color: textColor }}>
-          Calendar
-        </Text>
-      </View>
-
       <View className=" h-[70%] flex justify-center">
         <View>
           <Calendar
-            className=" px-10"
+            className="px-5"
             style={{ backgroundColor }}
             theme={{
               backgroundColor: backgroundColor,
@@ -76,7 +70,7 @@ const BirthdayCalendar = () => {
               textDisabledColor: "#555555",
               dotColor: "#00adf5",
               selectedDotColor: "#ffffff",
-              arrowColor: "#007bff",
+              arrowColor: iconColor,
               disabledArrowColor: "#d9e1e8",
               monthTextColor: "#007bff",
               indicatorColor: "#007bff",

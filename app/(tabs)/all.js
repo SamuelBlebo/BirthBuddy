@@ -10,7 +10,7 @@ import { StatusBar } from "expo-status-bar";
 
 import AllBirthdays from "../components/AllBirthdays";
 
-export default function HomeScreen() {
+export default function AllScreen() {
   const colorScheme = useColorScheme();
 
   const textColor = colorScheme === "dark" ? "#fff" : "#000";

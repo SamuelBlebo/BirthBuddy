@@ -146,7 +146,8 @@ export default function Modal() {
     navigation.goBack();
   };
 
-  // Determine background color based on the color scheme
+  const textColor = colorScheme === "dark" ? "#fff" : "#555";
+  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
@@ -189,12 +190,20 @@ export default function Modal() {
 
             <TouchableOpacity onPress={() => setIsEditing(true)}>
               {!isEditing ? (
-                <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-                  <Text className="font-bold">Name</Text>
+                <View
+                  className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+                  style={{ backgroundColor }}
+                >
+                  <Text className="font-bold" style={{ color: textColor }}>
+                    Name
+                  </Text>
                   <Text className="text-gray-400">{name || ""}</Text>
                 </View>
               ) : (
-                <View className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg">
+                <View
+                  className="w-[90%] flex flex-row rounded-[12px] h-[60px] px-4 mb-4 shadow-lg"
+                  style={{ backgroundColor }}
+                >
                   <TextInput
                     ref={textInputRef}
                     className="w-[100%]"
@@ -202,12 +211,16 @@ export default function Modal() {
                     value={name}
                     onChangeText={setName}
                     onBlur={() => setIsEditing(false)}
+                    style={{ color: textColor }}
                   />
                 </View>
               )}
             </TouchableOpacity>
 
-            <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
               <TouchableOpacity
                 className="flex flex-row w-full justify-between items-center"
                 onPress={() => {
@@ -215,7 +228,9 @@ export default function Modal() {
                   setShowDatePicker((prev) => !prev);
                 }}
               >
-                <Text className="font-bold ">Birthday</Text>
+                <Text className="font-bold " style={{ color: textColor }}>
+                  Birthday
+                </Text>
                 <View className="flex flex-row items-center">
                   <Text className="text-gray-400 text-base">
                     {birthday.toLocaleDateString()}
@@ -246,13 +261,23 @@ export default function Modal() {
                 />
               </View>
             )}
-            <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-              <Text className="font-bold">Zodiac Sign</Text>
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold" style={{ color: textColor }}>
+                Zodiac Sign
+              </Text>
               <Text className="text-gray-400 text-base">{zodiacSign}</Text>
             </View>
 
-            <View className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md">
-              <Text className="font-bold">Notification</Text>
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold" style={{ color: textColor }}>
+                Notification
+              </Text>
               <Switch
                 value={notificationEnabled}
                 onValueChange={setNotificationEnabled}
@@ -260,14 +285,20 @@ export default function Modal() {
               />
             </View>
 
-            <View className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md">
-              <Text className="font-bold">Notes</Text>
+            <View
+              className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold mt-2" style={{ color: textColor }}>
+                Notes
+              </Text>
               <TextInput
                 className="w-[100%] h-[100%]"
                 value={notes}
                 onChangeText={setNotes}
                 placeholder="Add notes..."
                 multiline
+                style={{ color: textColor }}
               />
             </View>
 
