@@ -11,6 +11,68 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
+
+// Function to calculate days until the next birthday
+const daysUntilNextBirthday = (birthday) => {
+  const today = new Date();
+  const nextBirthday = new Date(
+    today.getFullYear(),
+    birthday.getMonth(),
+    birthday.getDate()
+  );
+
+  if (today > nextBirthday) {
+    nextBirthday.setFullYear(today.getFullYear() + 1);
+  }
+
+  const diffInMilliseconds = nextBirthday - today;
+  return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
+};
+
+// Function to schedule notifications
+const scheduleBirthdayNotifications = async (birthdays) => {
+  try {
+    // Request notification permissions
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status !== "granted") {
+      await Notifications.requestPermissionsAsync();
+    }
+
+    // Schedule notifications for upcoming birthdays
+    for (const item of birthdays) {
+      const birthdayDate = new Date(item.birthday);
+      const daysUntilBirthday = daysUntilNextBirthday(birthdayDate);
+
+      if (daysUntilBirthday > 0 && daysUntilBirthday <= 7) {
+        // Notify if within the next 7 days
+        const trigger = {
+          day: birthdayDate.getDate(),
+          month: birthdayDate.getMonth() + 1,
+          year: birthdayDate.getFullYear(),
+          hour: 9, // Notification time
+          minute: 0,
+          second: 0,
+        };
+
+        const content = {
+          title: `Upcoming Birthday: ${item.name}`,
+          body: `Don't forget about ${
+            item.name
+          }'s birthday on ${birthdayDate.toLocaleDateString()}`,
+          sound: "default",
+        };
+
+        await Notifications.scheduleNotificationAsync({
+          content,
+          trigger,
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error scheduling notifications:", error);
+  }
+};
 
 const AllBirthdays = () => {
   const [items, setItems] = useState([]);
@@ -48,6 +110,9 @@ const AllBirthdays = () => {
         }));
 
       setItems(sortedGroupedItems);
+
+      // Schedule notifications for upcoming birthdays
+      scheduleBirthdayNotifications(filteredItems);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -66,22 +131,6 @@ const AllBirthdays = () => {
     await fetchData();
   };
 
-  function daysUntilNextBirthday(birthday) {
-    const today = new Date();
-    const nextBirthday = new Date(
-      today.getFullYear(),
-      birthday.getMonth(),
-      birthday.getDate()
-    );
-
-    if (today > nextBirthday) {
-      nextBirthday.setFullYear(today.getFullYear() + 1);
-    }
-
-    const diffInMilliseconds = nextBirthday - today;
-    return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
-  }
-
   const textColor = colorScheme === "dark" ? "#fff" : "#555";
   const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
@@ -94,7 +143,7 @@ const AllBirthdays = () => {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View key={item.title}>
-            <Text className="text-x text-gray-400  mb-2">{item.title}</Text>
+            <Text className="text-x text-gray-400 mb-2">{item.title}</Text>
             {item.data.map((birthdayItem, index) => (
               <Link
                 key={birthdayItem.name + index}

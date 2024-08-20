@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DarkTheme,
   DefaultTheme,
@@ -7,8 +7,8 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as Notifications from "expo-notifications";
 import { useNavigation } from "@react-navigation/native";
-
 import {
   ImageBackground,
   View,
@@ -17,6 +17,7 @@ import {
   useColorScheme,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -24,6 +25,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -34,6 +36,54 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    const fetchNotificationSetting = async () => {
+      const enabled = await AsyncStorage.getItem("notificationEnabled");
+      setNotificationEnabled(JSON.parse(enabled) || false);
+    };
+
+    fetchNotificationSetting();
+  }, []);
+
+  // Global Notification Handler
+  useEffect(() => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
+    const scheduleNotifications = async () => {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+
+      if (notificationEnabled) {
+        const interval = 60 * 1000; // 30 seconds in milliseconds
+
+        const sendNotification = async () => {
+          await Notifications.scheduleNotificationAsync({
+            content: {
+              title: "Birthday Reminder",
+              body: "A birthday is coming up soon!",
+              sound: "default",
+              badge: 1,
+            },
+            trigger: null, // Immediate trigger
+          });
+        };
+
+        const intervalId = setInterval(async () => {
+          await sendNotification();
+        }, interval);
+
+        return () => clearInterval(intervalId);
+      }
+    };
+
+    scheduleNotifications();
+  }, [notificationEnabled]);
 
   if (!loaded) {
     return null;
@@ -106,7 +156,6 @@ export default function RootLayout() {
         <Stack.Screen
           name="editbirthday"
           options={{
-            // Set the presentation mode to modal for our modal route.
             headerTitle: "Edit Birthday",
             presentation: "card",
           }}

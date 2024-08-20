@@ -82,8 +82,8 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       <View className="h-[100%]">
-        <View className="px-5 mb-2 mt-5">
-          <Text className="font-bold text-[34px] " style={{ color: textColor }}>
+        <View className="px-5 mb-2 mt-5 pt-7">
+          <Text className="font-bold text-[35px] " style={{ color: textColor }}>
             Upcoming
           </Text>
         </View>

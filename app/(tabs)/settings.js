@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,10 +6,11 @@ import {
   useColorScheme,
   TouchableOpacity,
   Switch,
-  Alert, // For showing alerts
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Notifications from "expo-notifications";
 
 export default function SettingsScreen() {
   const systemColorScheme = useColorScheme();
@@ -25,6 +26,37 @@ export default function SettingsScreen() {
   const textColor = currentColorScheme === "dark" ? "#fff" : "#000";
   const backgroundColor = currentColorScheme === "dark" ? "#232628" : "#fff";
 
+  // Request notification permissions when the component mounts
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "We need notification permissions to send you notifications."
+        );
+        return;
+      }
+    };
+
+    requestPermissions();
+  }, []);
+
+  useEffect(() => {
+    // Handle notification toggle
+    if (notificationEnabled) {
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+        }),
+      });
+    } else {
+      Notifications.cancelAllScheduledNotificationsAsync();
+    }
+  }, [notificationEnabled]);
+
   const togglePicker = (picker) => {
     if (picker === "theme") {
       setThemePickerVisible(!isThemePickerVisible);
@@ -36,19 +68,31 @@ export default function SettingsScreen() {
   };
 
   const handleRateApp = () => {
-    // Here you can implement the logic to redirect to app store or show a feedback form
     Alert.alert("Rate App", "This will open the app store for rating.");
   };
 
   const handleAboutApp = () => {
-    // Here you can implement the logic to show app information
     Alert.alert("About App", "This is the app information.");
+  };
+
+  const handleNotificationToggle = async () => {
+    if (!notificationEnabled) {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permissions required",
+          "Please enable notifications in your device settings."
+        );
+        return;
+      }
+    }
+    setNotificationEnabled((prev) => !prev);
   };
 
   return (
     <View className="h-[100%]">
-      <View className="px-10 mb-2 mt-10">
-        <Text className="font-bold text-[34px]" style={{ color: textColor }}>
+      <View className="px-5 pt-8 mb-10">
+        <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Settings
         </Text>
       </View>
@@ -63,7 +107,7 @@ export default function SettingsScreen() {
           </Text>
           <Switch
             value={notificationEnabled}
-            onValueChange={setNotificationEnabled}
+            onValueChange={handleNotificationToggle}
             trackColor={{ true: "#6495ED" }}
           />
         </View>
@@ -97,7 +141,7 @@ export default function SettingsScreen() {
         {isThemePickerVisible && (
           <View
             style={{
-              width: "40%",
+              width: "80%",
               marginBottom: 10,
               borderRadius: 8,
               backgroundColor,
@@ -144,11 +188,12 @@ export default function SettingsScreen() {
         {isSyncPickerVisible && (
           <View
             style={{
-              width: "40%",
+              width: "80%",
               marginBottom: 10,
               borderRadius: 8,
               backgroundColor,
             }}
+            className="flex justify-end"
           >
             <Picker
               selectedValue={syncOption}
@@ -183,7 +228,7 @@ export default function SettingsScreen() {
             Rate App
           </Text>
           <TouchableOpacity onPress={handleRateApp}>
-            <Ionicons name="star" size={24} color={textColor} />
+            <Ionicons name="star" size={24} color={"#6495ED"} />
           </TouchableOpacity>
         </View>
 
@@ -195,17 +240,10 @@ export default function SettingsScreen() {
             About App
           </Text>
           <TouchableOpacity onPress={handleAboutApp}>
-            <Ionicons name="information-circle" size={24} color={textColor} />
+            <Ionicons name="information-circle" size={24} color={"#6495ED"} />
           </TouchableOpacity>
         </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    width: "100%",
-    height: 200,
-  },
-});

@@ -6,6 +6,7 @@ import {
   View,
   Text,
   useColorScheme,
+  SafeAreaView,
 } from "react-native";
 
 import BirthdayCalender from "../components/Calendar";
@@ -17,17 +18,16 @@ export default function CalendarScreen() {
   const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
   return (
-    <View
-      className="h-[100%] flex-1 justify-center "
-      style={{ backgroundColor }}
-    >
-      <View className="px-10 mb-2 mt-[100px]">
-        <Text className="font-bold text-[34px] " style={{ color: textColor }}>
+    <SafeAreaView className="h-[100%] flex-grow" style={{ backgroundColor }}>
+      <View className="px-5 pt-8">
+        <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Calendar
         </Text>
       </View>
-      <BirthdayCalender />
-    </View>
+      <View className="flex-1 justify-center mt-[-150px] mx-5 rounded-2xl">
+        <BirthdayCalender />
+      </View>
+    </SafeAreaView>
   );
 }
 
