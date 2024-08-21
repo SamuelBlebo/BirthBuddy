@@ -65,7 +65,7 @@ export default function Modal() {
   const [birthday, setBirthday] = useState(new Date());
   const [zodiacSign, setZodiacSign] = useState(getZodiacSign(new Date()));
   const [notes, setNotes] = useState("");
-  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [profileImage, setProfileImage] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

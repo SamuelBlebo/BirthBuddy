@@ -19,13 +19,23 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   const [notificationEnabled, setNotificationEnabled] = useState(false);
+
+  useEffect(() => {
+    const requestNotificationPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission for notifications is not granted!");
+      }
+    };
+
+    requestNotificationPermissions();
+  }, []);
 
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -46,48 +56,72 @@ export default function RootLayout() {
     fetchNotificationSetting();
   }, []);
 
-  // Global Notification Handler
   useEffect(() => {
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-      }),
-    });
-
-    const scheduleNotifications = async () => {
-      await Notifications.cancelAllScheduledNotificationsAsync();
-
+    const scheduleBirthdayNotifications = async () => {
       if (notificationEnabled) {
-        const interval = 60 * 1000; // 30 seconds in milliseconds
+        // Clear all existing notifications
+        await Notifications.cancelAllScheduledNotificationsAsync();
+        console.log("All existing notifications canceled.");
 
-        const sendNotification = async () => {
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: "Birthday Reminder",
-              body: "A birthday is coming up soon!",
-              sound: "default",
-              badge: 1,
-            },
-            trigger: null, // Immediate trigger
-          });
-        };
+        // Get stored birthdays
+        const storedItems = await AsyncStorage.getItem("birthdays");
+        const birthdays = storedItems ? JSON.parse(storedItems) : [];
 
-        const intervalId = setInterval(async () => {
-          await sendNotification();
-        }, interval);
+        console.log("Processing birthdays:", birthdays);
 
-        return () => clearInterval(intervalId);
+        birthdays.forEach((birthday) => {
+          const birthDate = new Date(birthday.birthday);
+          const now = new Date();
+
+          // Set the time for notification to 3:48 PM on the birthday
+          birthDate.setHours(15, 48, 0, 0);
+
+          if (birthDate > now) {
+            console.log(
+              `Scheduling notification for ${
+                birthday.name
+              } on ${birthDate.toString()}`
+            );
+            Notifications.scheduleNotificationAsync({
+              content: {
+                title: "Birthday Reminder",
+                body: `Today is ${birthday.name}'s birthday! 🎉`,
+                sound: "default",
+              },
+              trigger: birthDate,
+            })
+              .then(() => {
+                console.log(
+                  `Notification scheduled for ${
+                    birthday.name
+                  } at ${birthDate.toString()}`
+                );
+              })
+              .catch((error) => {
+                console.error("Error scheduling notification:", error);
+              });
+          } else {
+            console.log(
+              `Skipping ${birthday.name}'s birthday as it is in the past.`
+            );
+          }
+        });
       }
     };
 
-    scheduleNotifications();
+    scheduleBirthdayNotifications();
   }, [notificationEnabled]);
 
-  if (!loaded) {
-    return null;
-  }
+  useEffect(() => {
+    const notificationSubscription =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log("Notification received:", notification);
+      });
+
+    return () => {
+      notificationSubscription.remove();
+    };
+  }, []);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -109,7 +143,7 @@ export default function RootLayout() {
             ),
             headerLeft: () => (
               <View
-                className="p-1 rounded-full "
+                className="p-1 rounded-full"
                 style={{ backgroundColor: "rgba(226, 232, 240, 0.6)" }}
               >
                 <Ionicons
@@ -121,7 +155,7 @@ export default function RootLayout() {
             ),
             headerRight: () => (
               <View
-                className="bg-slate-200 bg-opacity-10 p-1 rounded-[50%] "
+                className="bg-slate-200 bg-opacity-10 p-1 rounded-[50%]"
                 style={{ backgroundColor: "rgba(226, 232, 240, 0.6)" }}
               >
                 <Ionicons
@@ -141,11 +175,11 @@ export default function RootLayout() {
             headerBackTitleVisible: false,
             headerTitle: "Add Birthday",
             headerLeft: () => (
-              <Text className=" text-[#6495ED]">
+              <Text className="text-[#6495ED]">
                 <Ionicons
                   name="close"
                   size={24}
-                  className=" text-[#6495ED]"
+                  className="text-[#6495ED]"
                   style={{ marginLeft: 15 }}
                   onPress={() => navigation.goBack()}
                 />
