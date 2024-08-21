@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import * as Notifications from "expo-notifications";
 
 export default function SettingsScreen() {
   const systemColorScheme = useColorScheme();
@@ -22,40 +21,8 @@ export default function SettingsScreen() {
   const [isSyncPickerVisible, setSyncPickerVisible] = useState(false);
 
   const currentColorScheme = theme === "system" ? systemColorScheme : theme;
-
   const textColor = currentColorScheme === "dark" ? "#fff" : "#000";
   const backgroundColor = currentColorScheme === "dark" ? "#232628" : "#fff";
-
-  // Request notification permissions when the component mounts
-  useEffect(() => {
-    const requestPermissions = async () => {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission required",
-          "We need notification permissions to send you notifications."
-        );
-        return;
-      }
-    };
-
-    requestPermissions();
-  }, []);
-
-  useEffect(() => {
-    // Handle notification toggle
-    if (notificationEnabled) {
-      Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-          shouldShowAlert: true,
-          shouldPlaySound: true,
-          shouldSetBadge: true,
-        }),
-      });
-    } else {
-      Notifications.cancelAllScheduledNotificationsAsync();
-    }
-  }, [notificationEnabled]);
 
   const togglePicker = (picker) => {
     if (picker === "theme") {
@@ -75,17 +42,7 @@ export default function SettingsScreen() {
     Alert.alert("About App", "This is the app information.");
   };
 
-  const handleNotificationToggle = async () => {
-    if (!notificationEnabled) {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permissions required",
-          "Please enable notifications in your device settings."
-        );
-        return;
-      }
-    }
+  const handleNotificationToggle = () => {
     setNotificationEnabled((prev) => !prev);
   };
 
