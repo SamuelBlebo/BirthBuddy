@@ -11,9 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
-import * as Notifications from "expo-notifications";
 
-// Function to calculate days until the next birthday
 const daysUntilNextBirthday = (birthday) => {
   const today = new Date();
   const nextBirthday = new Date(
@@ -66,9 +64,6 @@ const AllBirthdays = () => {
         }));
 
       setItems(sortedGroupedItems);
-
-      // Schedule notifications for upcoming birthdays
-      scheduleBirthdayNotifications(filteredItems);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
