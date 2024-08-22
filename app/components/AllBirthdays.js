@@ -30,50 +30,6 @@ const daysUntilNextBirthday = (birthday) => {
   return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
 };
 
-// Function to schedule notifications
-const scheduleBirthdayNotifications = async (birthdays) => {
-  try {
-    // Request notification permissions
-    const { status } = await Notifications.getPermissionsAsync();
-    if (status !== "granted") {
-      await Notifications.requestPermissionsAsync();
-    }
-
-    // Schedule notifications for upcoming birthdays
-    for (const item of birthdays) {
-      const birthdayDate = new Date(item.birthday);
-      const daysUntilBirthday = daysUntilNextBirthday(birthdayDate);
-
-      if (daysUntilBirthday > 0 && daysUntilBirthday <= 7) {
-        // Notify if within the next 7 days
-        const trigger = {
-          day: birthdayDate.getDate(),
-          month: birthdayDate.getMonth() + 1,
-          year: birthdayDate.getFullYear(),
-          hour: 9, // Notification time
-          minute: 0,
-          second: 0,
-        };
-
-        const content = {
-          title: `Upcoming Birthday: ${item.name}`,
-          body: `Don't forget about ${
-            item.name
-          }'s birthday on ${birthdayDate.toLocaleDateString()}`,
-          sound: "default",
-        };
-
-        await Notifications.scheduleNotificationAsync({
-          content,
-          trigger,
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Error scheduling notifications:", error);
-  }
-};
-
 const AllBirthdays = () => {
   const [items, setItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);

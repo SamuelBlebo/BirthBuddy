@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -29,6 +29,10 @@ const UpcomingBirthdays = () => {
       const sortedItems = filteredItems.sort((a, b) => {
         const daysA = daysUntilNextBirthday(new Date(a.birthday));
         const daysB = daysUntilNextBirthday(new Date(b.birthday));
+
+        if (daysA === "Today" || daysA === "Tomorrow") return -1;
+        if (daysB === "Today" || daysB === "Tomorrow") return 1;
+
         return daysA - daysB;
       });
 
@@ -64,11 +68,29 @@ const UpcomingBirthdays = () => {
     }
 
     const diffInMilliseconds = nextBirthday - today;
-    return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
+    const diffInDays = Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
+
+    const isLeapYear = (year) => {
+      return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+    };
+
+    if (diffInDays === 0) {
+      return "Today";
+    } else if (diffInDays === 1) {
+      return "Tomorrow";
+    } else if (diffInDays === -1) {
+      return "Yesterday";
+    } else if (
+      diffInDays === 365 ||
+      (isLeapYear(today.getFullYear()) && diffInDays === 366)
+    ) {
+      return "Today";
+    } else {
+      return diffInDays;
+    }
   }
 
   const textColor = colorScheme === "dark" ? "#fff" : "#555";
-  const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
@@ -82,7 +104,7 @@ const UpcomingBirthdays = () => {
             <Link href={`/editbirthday?id=${item.id}`}>
               <View
                 style={{ backgroundColor }}
-                className="w-[100%] flex flex-row justify-between items-center rounded-[10px] mb-4 p-4  shadow-sm "
+                className="w-[100%] flex flex-row justify-between items-center rounded-[10px] mb-4 p-4 shadow-sm"
               >
                 <View className="flex flex-row items-center shadow-sm">
                   {item.profileImage ? (
@@ -98,7 +120,7 @@ const UpcomingBirthdays = () => {
                       style={styles.icon}
                     />
                   )}
-                  <View className="pl-2 flex justify-between ">
+                  <View className="pl-2 flex justify-between">
                     <Text
                       className="mb-[6px] text-[18px] font-[600]"
                       style={{ color: textColor }}
@@ -115,10 +137,10 @@ const UpcomingBirthdays = () => {
                 <View className="flex justify-between items-end">
                   <Text className="font-semibold mb-[6px] text-gray-400">
                     {item.birthday
-                      ? `${daysUntilNextBirthday(new Date(item.birthday))} days`
+                      ? daysUntilNextBirthday(new Date(item.birthday))
                       : "No Birthday"}
                   </Text>
-                  <Text className="font-semibold " style={{ color: textColor }}>
+                  <Text className="font-semibold" style={{ color: textColor }}>
                     {item.zodiacSign || "No Zodiac Sign"}
                   </Text>
                 </View>
@@ -138,7 +160,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 50,
-    marginTop: 8,
+  },
+  icon: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
   },
 });
 

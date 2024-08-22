@@ -44,6 +44,7 @@ export default function SettingsScreen() {
 
   const handleNotificationToggle = () => {
     setNotificationEnabled((prev) => !prev);
+    // Notify RootLayout or a global state management solution to handle enabling/disabling notifications
   };
 
   return (
@@ -150,7 +151,6 @@ export default function SettingsScreen() {
               borderRadius: 8,
               backgroundColor,
             }}
-            className="flex justify-end"
           >
             <Picker
               selectedValue={syncOption}
