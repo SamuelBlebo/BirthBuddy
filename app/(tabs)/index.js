@@ -44,7 +44,10 @@ export default function HomeScreen() {
       const storedItems = await AsyncStorage.getItem("birthdays");
       const parsedItems = storedItems ? JSON.parse(storedItems) : [];
 
+      console.log("Fetched birthdays:", parsedItems);
+
       const today = new Date();
+      const notificationPromises = [];
 
       parsedItems.forEach(async (item) => {
         const birthdayDate = new Date(item.birthday);
@@ -52,43 +55,76 @@ export default function HomeScreen() {
 
         // Schedule notification 7 days before
         if (daysUntilBirthday === 7) {
-          const notificationTime = new Date();
+          const notificationTime = new Date(birthdayDate);
           notificationTime.setHours(8);
           notificationTime.setMinutes(57);
           notificationTime.setSeconds(0);
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: `Upcoming Birthday: ${item.name}`,
-              body: `Just a week left until ${item.name}'s birthday!`,
-              sound: true,
-            },
-            trigger: {
-              date: notificationTime,
-            },
-          });
+          notificationTime.setDate(notificationTime.getDate() - 7); // Set date 7 days before
+
+          // Convert to local time zone
+          notificationTime.setMinutes(
+            notificationTime.getMinutes() - notificationTime.getTimezoneOffset()
+          );
+
+          console.log(
+            "Scheduling notification 7 days before:",
+            notificationTime
+          );
+
+          if (notificationTime > today) {
+            // Ensure the time is in the future
+            notificationPromises.push(
+              Notifications.scheduleNotificationAsync({
+                content: {
+                  title: `Upcoming Birthday: ${item.name}`,
+                  body: `Just a week left until ${item.name}'s birthday!`,
+                  sound: true,
+                },
+                trigger: {
+                  date: notificationTime,
+                },
+              })
+            );
+          }
         }
 
-        // Schedule notification at 8:55 AM on the day of the birthday
+        // Schedule notification on the day of the birthday
         if (daysUntilBirthday === 0) {
-          const notificationTime = new Date();
+          const notificationTime = new Date(today); // Set to today
           notificationTime.setHours(8);
           notificationTime.setMinutes(57);
           notificationTime.setSeconds(0);
 
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: `Today is ${item.name}'s Birthday!`,
-              body: `Don't forget to wish ${item.name} a happy birthday!`,
-              sound: true,
-            },
-            trigger: {
-              date: notificationTime,
-            },
-          });
+          console.log("Scheduling notification today:", notificationTime);
+
+          if (notificationTime > today) {
+            // Ensure the time is in the future
+            notificationPromises.push(
+              Notifications.scheduleNotificationAsync({
+                content: {
+                  title: `Today is ${item.name}'s Birthday!`,
+                  body: `Don't forget to wish ${item.name} a happy birthday!`,
+                  sound: true,
+                },
+                trigger: {
+                  date: notificationTime,
+                },
+              })
+            );
+          }
         }
       });
+
+      await Promise.all(notificationPromises);
+
+      const postScheduledNotifications =
+        await Notifications.getAllScheduledNotificationsAsync();
+      console.log(
+        "Scheduled notifications after scheduling:",
+        postScheduledNotifications
+      );
     } catch (error) {
-      console.error("Error fetching birthdays:", error);
+      console.error("Error scheduling notifications:", error);
     }
   };
 
