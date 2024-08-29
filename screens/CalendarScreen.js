@@ -20,6 +20,7 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView className="h-[100%] flex-grow" style={{ backgroundColor }}>
       <View className="px-5 pt-8">
+        <View className="flex-1 justify-center items-center bg-blue-500"></View>
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Calendar
         </Text>

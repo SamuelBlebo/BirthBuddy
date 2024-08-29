@@ -49,7 +49,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="h-[100%]">
-      <View className="px-5 pt-8 mb-10">
+      <View className="px-5 pt-8 mb-12">
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Settings
         </Text>

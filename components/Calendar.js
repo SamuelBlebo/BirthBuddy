@@ -50,7 +50,7 @@ const BirthdayCalendar = () => {
   return (
     <View>
       <Calendar
-        className="px-5 py-10 rounded-2xl"
+        className="px-4 py-10 rounded-2xl"
         theme={{
           backgroundColor: backgroundColor,
           calendarBackground: backgroundColor,

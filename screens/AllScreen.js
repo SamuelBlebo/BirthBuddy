@@ -19,7 +19,8 @@ export default function AllScreen() {
   return (
     <View className="h-[100%]">
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-      <View className="px-5 pt-8">
+
+      <View className="px-6 pt-8">
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           All
         </Text>

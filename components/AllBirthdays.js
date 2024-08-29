@@ -87,7 +87,7 @@ const AllBirthdays = () => {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <View className="px-4 py-8">
+    <View className="px-4 py-6">
       <FlatList
         data={items}
         keyExtractor={(item, index) => item.title + index}

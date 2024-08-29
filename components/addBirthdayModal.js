@@ -21,7 +21,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { Ionicons } from "@expo/vector-icons/";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import SaveForm from "./components/SaveForm";
+import SaveForm from "./SaveForm";
 import { useNavigation } from "@react-navigation/native";
 
 const currentYear = new Date().getFullYear();
@@ -161,7 +161,7 @@ export default function Modal() {
           <View className="flex-1 items-center py-10">
             <TouchableOpacity
               onPress={pickImage}
-              className="h-32 w-32 items-center mb-5"
+              className="h-32 w-32 items-center mb-6"
             >
               {profileImage ? (
                 <View className="w-32 h-32 rounded-full overflow-hidden ">

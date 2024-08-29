@@ -6,16 +6,17 @@ import {
   StyleSheet,
   Image,
   useColorScheme,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons/";
-import { Link } from "expo-router";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const UpcomingBirthdays = () => {
   const [items, setItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
 
   const fetchData = async () => {
     try {
@@ -94,14 +95,18 @@ const UpcomingBirthdays = () => {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <View className="px-4 py-8">
+    <View className="px-4 py-8 ">
       <FlatList
         data={items}
         keyExtractor={(item, index) => item.name + index}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           return (
-            <Link href={`/editbirthday?id=${item.id}`}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("EditBirthday", { id: item.id })
+              }
+            >
               <View
                 style={{ backgroundColor }}
                 className="w-[100%] flex flex-row justify-between items-center rounded-[10px] mb-4 p-4 shadow-sm"
@@ -145,7 +150,7 @@ const UpcomingBirthdays = () => {
                   </Text>
                 </View>
               </View>
-            </Link>
+            </TouchableOpacity>
           );
         }}
         refreshing={refreshing}

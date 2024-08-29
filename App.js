@@ -1,17 +1,18 @@
 import React from "react";
+import { View, ImageBackground, useColorScheme } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons/";
-import { AntDesign } from "@expo/vector-icons/";
-import { FontAwesome6 } from "@expo/vector-icons/";
-import HomeScreen from "./screens/HomeScreen.js";
-import AllScreen from "./screens/AllScreen.js";
-import CalendarScreen from "./screens/CalendarScreen.js";
-import SettingScreen from "./screens/SettingScreen.js";
-import { useColorScheme } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Ionicons, AntDesign, FontAwesome6 } from "@expo/vector-icons";
+import HomeScreen from "./screens/HomeScreen";
+import AllScreen from "./screens/AllScreen";
+import CalendarScreen from "./screens/CalendarScreen";
+import SettingScreen from "./screens/SettingScreen";
+import EditBirthday from "./components/editbirthday"; // Import the EditBirthday screen
+import Modal from "./components/addBirthdayModal";
 
-// Create Tab Navigator
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 function MyTabs() {
   const colorScheme = useColorScheme();
@@ -20,40 +21,17 @@ function MyTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+        tabBarIcon: ({ focused, color }) => {
           if (route.name === "Home") {
-            return (
-              <AntDesign
-                size={27}
-                color={color}
-                name={focused ? "home" : "home"}
-              />
-            );
+            return <AntDesign size={27} color={color} name="home" />;
           } else if (route.name === "All") {
             return (
-              <FontAwesome6
-                name={focused ? "rectangle-list" : "list-alt"}
-                size={24}
-                color={color}
-              />
+              <FontAwesome6 name="rectangle-list" size={24} color={color} />
             );
           } else if (route.name === "Calendar") {
-            return (
-              <Ionicons
-                name={focused ? "calendar" : "calendar-outline"}
-                size={24}
-                color={color}
-              />
-            );
+            return <Ionicons name="calendar" size={24} color={color} />;
           } else if (route.name === "Settings") {
-            return (
-              <Ionicons
-                name={focused ? "settings" : "settings-outline"}
-                size={24}
-                color={color}
-              />
-            );
+            return <Ionicons name="settings" size={24} color={color} />;
           }
         },
         tabBarActiveTintColor: iconColor,
@@ -69,11 +47,84 @@ function MyTabs() {
   );
 }
 
-// Main App Component
 export default function App() {
   return (
     <NavigationContainer>
-      <MyTabs />
+      <Stack.Navigator>
+        <Stack.Screen
+          name="MainTabs"
+          component={MyTabs}
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerTitle: "",
+            headerBackground: () => (
+              <ImageBackground
+                source={require("./assets/birthday-doodle.png")}
+                style={{ height: "100%" }}
+                resizeMode="cover"
+              >
+                <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)" }} />
+              </ImageBackground>
+            ),
+            headerLeft: () => (
+              <View
+                style={{
+                  padding: 8,
+                  backgroundColor: "rgba(226, 232, 240, 0.6)",
+                  borderRadius: 9999,
+                }}
+              >
+                <Ionicons
+                  name="search"
+                  size={24}
+                  onPress={() => console.log("Search pressed")}
+                />
+              </View>
+            ),
+            headerRight: () => (
+              <View
+                style={{
+                  padding: 8,
+                  backgroundColor: "rgba(226, 232, 240, 0.6)",
+                  borderRadius: 9999,
+                }}
+              >
+                <Ionicons
+                  name="add"
+                  size={24}
+                  onPress={() => navigation.navigate("addBirthdayModal")}
+                />
+              </View>
+            ),
+          })}
+        />
+        <Stack.Screen
+          name="addBirthdayModal"
+          component={Modal}
+          options={{
+            presentation: "modal",
+            headerShown: true,
+            headerTitle: "",
+            headerLeft: () => (
+              <View style={{ paddingLeft: 16 }}>
+                <Ionicons
+                  name="arrow-back"
+                  size={24}
+                  color="black"
+                  onPress={() => navigation.goBack()}
+                />
+              </View>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="EditBirthday"
+          component={EditBirthday} // Add this line to register the screen
+          options={{
+            title: "Edit Birthday",
+          }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -199,6 +199,9 @@ export default function HomeScreen() {
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
+      <View className="flex-1 justify-center items-center bg-blue-500">
+        <Text className="text-white text-lg">Hello, NativeWind!</Text>
+      </View>
       <View className="h-[100%]">
         <View className="px-5 mb-2 mt-5 pt-7">
           <Text className="font-bold text-[35px] " style={{ color: textColor }}>
