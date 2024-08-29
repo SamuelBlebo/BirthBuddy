@@ -74,16 +74,23 @@ export default function EditBirthday() {
         const storedItems = await AsyncStorage.getItem("birthdays");
         const parsedItems = storedItems ? JSON.parse(storedItems) : [];
         const itemToEdit = parsedItems.find((item) => item.id === id);
+
         if (itemToEdit) {
-          setName(itemToEdit.name);
-          setBirthday(new Date(itemToEdit.birthday));
-          setZodiacSign(itemToEdit.zodiacSign);
+          setName(itemToEdit.name || "");
+          setBirthday(
+            itemToEdit.birthday ? new Date(itemToEdit.birthday) : new Date()
+          );
+          setZodiacSign(itemToEdit.zodiacSign || getZodiacSign(new Date()));
           setNotes(itemToEdit.notes || "");
           setNotificationEnabled(itemToEdit.notificationEnabled || false);
           setProfileImage(itemToEdit.profileImage || null);
+        } else {
+          Alert.alert("Error", "Birthday not found");
+          router.back();
         }
       } catch (error) {
         console.error("Error fetching birthday data:", error);
+        Alert.alert("Error", "Failed to load birthday details");
       }
     };
 
@@ -121,6 +128,7 @@ export default function EditBirthday() {
       console.error("Error saving edited birthday:", error);
     }
   };
+
   const handleDelete = async () => {
     Alert.alert(
       "Confirm Delete",
@@ -246,47 +254,29 @@ export default function EditBirthday() {
               className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
               style={{ backgroundColor }}
             >
+              <Text className="font-bold" style={{ color: textColor }}>
+                Birthday
+              </Text>
               <TouchableOpacity
-                className="flex flex-row w-full justify-between items-center"
-                onPress={() => {
-                  Keyboard.dismiss();
-                  setShowDatePicker((prev) => !prev);
-                }}
+                onPress={() => setShowDatePicker(true)}
+                className="py-2"
               >
-                <Text className="font-bold " style={{ color: textColor }}>
-                  Birthday
-                </Text>
-                <View className="flex flex-row items-center">
-                  <Text className="text-gray-400 text-base">
-                    {birthday.toLocaleDateString()}
-                  </Text>
-                  <Ionicons
-                    name={showDatePicker ? "chevron-down" : "chevron-forward"}
-                    size={20}
-                    color="#9ca3af"
-                    style={{ marginLeft: 8 }}
-                  />
-                </View>
+                <Ionicons name="calendar-outline" size={24} color={iconColor} />
               </TouchableOpacity>
-            </View>
-            {showDatePicker && (
-              <View
-                className="rounded-[12px] px-4 mb-4 shadow-md "
-                style={{ backgroundColor }}
-              >
+              {showDatePicker && (
                 <DateTimePicker
                   value={birthday}
                   mode="date"
-                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  display="default"
                   onChange={(event, selectedDate) => {
-                    if (selectedDate) {
-                      setBirthday(selectedDate);
-                      setZodiacSign(getZodiacSign(selectedDate));
-                    }
+                    const currentDate = selectedDate || birthday;
+                    setShowDatePicker(Platform.OS === "ios");
+                    setBirthday(currentDate);
+                    setZodiacSign(getZodiacSign(currentDate));
                   }}
                 />
-              </View>
-            )}
+              )}
+            </View>
             <View
               className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
               style={{ backgroundColor }}
@@ -294,49 +284,46 @@ export default function EditBirthday() {
               <Text className="font-bold" style={{ color: textColor }}>
                 Zodiac Sign
               </Text>
-              <Text className="text-gray-400 text-base">{zodiacSign}</Text>
+              <Text className="text-gray-400">{zodiacSign}</Text>
             </View>
-
             <View
               className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
               style={{ backgroundColor }}
             >
               <Text className="font-bold" style={{ color: textColor }}>
-                Notification
+                Notes
+              </Text>
+              <TextInput
+                className="text-gray-400"
+                placeholder="Add notes..."
+                value={notes}
+                onChangeText={setNotes}
+              />
+            </View>
+            <View
+              className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
+              style={{ backgroundColor }}
+            >
+              <Text className="font-bold" style={{ color: textColor }}>
+                Enable Notification
               </Text>
               <Switch
                 value={notificationEnabled}
                 onValueChange={setNotificationEnabled}
-                trackColor={{ true: "#6495ED" }}
               />
             </View>
-            <View
-              className="w-[90%] flex items-start justify-between rounded-[12px] h-[150px] px-4 mb-4 shadow-md"
-              style={{ backgroundColor }}
-            >
-              <Text className="font-bold mt-2" style={{ color: textColor }}>
-                Notes
-              </Text>
-              <TextInput
-                className="flex-1 w-[100%] h-[100%]"
-                value={notes}
-                onChangeText={setNotes}
-                placeholder="Add notes..."
-                multiline
+            <View className="w-[90%] flex-row justify-between mt-10">
+              <Button title="Save Changes" onPress={handleSaveEdit} />
+              <Button
+                title="Delete"
+                onPress={handleDelete}
+                color={Platform.OS === "ios" ? "#ff3b30" : "#d9534f"}
               />
             </View>
-            <Text className="mt-5">
-              <Text>
-                <Button title="Update" onPress={handleSaveEdit} />
-              </Text>
-              <Text>
-                <Button color="red" title="Delete" onPress={handleDelete} />
-              </Text>
-            </Text>
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      <StatusBar style="auto" />
     </KeyboardAwareScrollView>
   );
 }

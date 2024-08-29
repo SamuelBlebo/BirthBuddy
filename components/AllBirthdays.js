@@ -1,3 +1,4 @@
+// AllBirthdays.js
 import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
@@ -6,11 +7,11 @@ import {
   StyleSheet,
   Image,
   useColorScheme,
+  TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons/";
-import { Link } from "expo-router";
-import { useFocusEffect } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 const daysUntilNextBirthday = (birthday) => {
   const today = new Date();
@@ -32,6 +33,7 @@ const AllBirthdays = () => {
   const [items, setItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
 
   const fetchData = async () => {
     try {
@@ -96,9 +98,11 @@ const AllBirthdays = () => {
           <View key={item.title}>
             <Text className="text-x text-gray-400 mb-2">{item.title}</Text>
             {item.data.map((birthdayItem, index) => (
-              <Link
+              <TouchableOpacity
                 key={birthdayItem.name + index}
-                href={`/editbirthday?id=${birthdayItem.id}`}
+                onPress={() =>
+                  navigation.navigate("EditBirthday", { id: birthdayItem.id })
+                }
               >
                 <View
                   style={{ backgroundColor }}
@@ -145,7 +149,7 @@ const AllBirthdays = () => {
                     </Text>
                   </View>
                 </View>
-              </Link>
+              </TouchableOpacity>
             ))}
           </View>
         )}

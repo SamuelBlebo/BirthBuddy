@@ -8,8 +8,8 @@ import HomeScreen from "./screens/HomeScreen";
 import AllScreen from "./screens/AllScreen";
 import CalendarScreen from "./screens/CalendarScreen";
 import SettingScreen from "./screens/SettingScreen";
-import EditBirthday from "./components/editbirthday"; // Import the EditBirthday screen
-import Modal from "./components/addBirthdayModal";
+import EditBirthday from "./components/Editbirthday";
+import Modal from "./components/AddBirthdayModal";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -66,10 +66,14 @@ export default function App() {
                 <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.3)" }} />
               </ImageBackground>
             ),
+            headerStyle: {
+              height: 100, // Set the desired header height here
+            },
             headerLeft: () => (
               <View
                 style={{
-                  padding: 8,
+                  marginLeft: 16,
+                  padding: 4,
                   backgroundColor: "rgba(226, 232, 240, 0.6)",
                   borderRadius: 9999,
                 }}
@@ -84,7 +88,8 @@ export default function App() {
             headerRight: () => (
               <View
                 style={{
-                  padding: 8,
+                  marginRight: 16, // Add margin to the right of the button
+                  padding: 4,
                   backgroundColor: "rgba(226, 232, 240, 0.6)",
                   borderRadius: 9999,
                 }}
@@ -98,10 +103,11 @@ export default function App() {
             ),
           })}
         />
+
         <Stack.Screen
           name="addBirthdayModal"
           component={Modal}
-          options={{
+          options={({ navigation }) => ({
             presentation: "modal",
             headerShown: true,
             headerTitle: "",
@@ -115,11 +121,11 @@ export default function App() {
                 />
               </View>
             ),
-          }}
+          })}
         />
         <Stack.Screen
           name="EditBirthday"
-          component={EditBirthday} // Add this line to register the screen
+          component={EditBirthday}
           options={{
             title: "Edit Birthday",
           }}

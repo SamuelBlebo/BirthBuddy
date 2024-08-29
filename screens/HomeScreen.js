@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Platform,
-  Text,
-  ScrollView,
-  View,
-  useColorScheme,
-  Alert,
-} from "react-native";
+import { Platform, Text, ScrollView, View, useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
-import { format, addDays, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
 
 import UpcomingBirthdays from "../components/UpcomingBirthdays";
 
@@ -21,113 +13,6 @@ export default function HomeScreen() {
   const [daysToNextBirthday, setDaysToNextBirthday] = useState(0);
   const [birthdaysInMonth, setBirthdaysInMonth] = useState(0);
   const router = useRouter();
-
-  // Request Notification Permissions
-  const requestNotificationPermissions = async () => {
-    if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    const { status } = await Notifications.requestPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission not granted to show notifications");
-    }
-  };
-
-  // Function to fetch birthdays and schedule notifications
-  const scheduleBirthdayNotifications = async () => {
-    try {
-      const storedItems = await AsyncStorage.getItem("birthdays");
-      const parsedItems = storedItems ? JSON.parse(storedItems) : [];
-
-      console.log("Fetched birthdays:", parsedItems);
-
-      const today = new Date();
-      const notificationPromises = [];
-
-      parsedItems.forEach(async (item) => {
-        const birthdayDate = new Date(item.birthday);
-        const daysUntilBirthday = differenceInDays(birthdayDate, today);
-
-        // Schedule notification 7 days before
-        if (daysUntilBirthday === 7) {
-          const notificationTime = new Date(birthdayDate);
-          notificationTime.setHours(8);
-          notificationTime.setMinutes(57);
-          notificationTime.setSeconds(0);
-          notificationTime.setDate(notificationTime.getDate() - 7); // Set date 7 days before
-
-          // Convert to local time zone
-          notificationTime.setMinutes(
-            notificationTime.getMinutes() - notificationTime.getTimezoneOffset()
-          );
-
-          console.log(
-            "Scheduling notification 7 days before:",
-            notificationTime
-          );
-
-          if (notificationTime > today) {
-            // Ensure the time is in the future
-            notificationPromises.push(
-              Notifications.scheduleNotificationAsync({
-                content: {
-                  title: `Upcoming Birthday: ${item.name}`,
-                  body: `Just a week left until ${item.name}'s birthday!`,
-                  sound: true,
-                },
-                trigger: {
-                  date: notificationTime,
-                },
-              })
-            );
-          }
-        }
-
-        // Schedule notification on the day of the birthday
-        if (daysUntilBirthday === 0) {
-          const notificationTime = new Date(today); // Set to today
-          notificationTime.setHours(8);
-          notificationTime.setMinutes(57);
-          notificationTime.setSeconds(0);
-
-          console.log("Scheduling notification today:", notificationTime);
-
-          if (notificationTime > today) {
-            // Ensure the time is in the future
-            notificationPromises.push(
-              Notifications.scheduleNotificationAsync({
-                content: {
-                  title: `Today is ${item.name}'s Birthday!`,
-                  body: `Don't forget to wish ${item.name} a happy birthday!`,
-                  sound: true,
-                },
-                trigger: {
-                  date: notificationTime,
-                },
-              })
-            );
-          }
-        }
-      });
-
-      await Promise.all(notificationPromises);
-
-      const postScheduledNotifications =
-        await Notifications.getAllScheduledNotificationsAsync();
-      console.log(
-        "Scheduled notifications after scheduling:",
-        postScheduledNotifications
-      );
-    } catch (error) {
-      console.error("Error scheduling notifications:", error);
-    }
-  };
 
   // Fetch birthdays and update state
   const fetchData = async () => {
@@ -182,11 +67,9 @@ export default function HomeScreen() {
     return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
   };
 
-  // Invoke fetchData, requestNotificationPermissions, and scheduleBirthdayNotifications when the component mounts
+  // Invoke fetchData when the component mounts
   useEffect(() => {
     fetchData();
-    requestNotificationPermissions();
-    scheduleBirthdayNotifications();
   }, []);
 
   const textColor = colorScheme === "dark" ? "#fff" : "#555";
@@ -221,7 +104,7 @@ export default function HomeScreen() {
                 className="w-[150px] h-[100px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
               >
                 <Text
-                  className="font-bold text-[50px]"
+                  className="font-bold text-[35px]"
                   style={{ color: textColor }}
                 >
                   {birthdaysInMonth}
@@ -236,7 +119,7 @@ export default function HomeScreen() {
                 className="w-[150px] h-[100px] flex justify-center items-center rounded-[20px]  mr-4 shadow-md"
               >
                 <Text
-                  className="font-bold text-[50px]"
+                  className="font-bold text-[35px]"
                   style={{ color: textColor }}
                 >
                   {daysToNextBirthday}
@@ -250,7 +133,7 @@ export default function HomeScreen() {
               >
                 <Ionicons
                   name="arrow-forward"
-                  size={50}
+                  size={35}
                   color={iconColor}
                   onPress={() => router.push("/all")} // Navigate to the "All" tab
                 />
