@@ -15,7 +15,6 @@ import {
   useColorScheme,
   Button,
 } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -23,6 +22,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as ImagePicker from "expo-image-picker";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons/";
+import { useRoute, useNavigation } from "@react-navigation/native"; // Import useNavigation
 
 const getZodiacSign = (date) => {
   const day = date.getDate();
@@ -54,9 +54,10 @@ const getZodiacSign = (date) => {
 };
 
 export default function EditBirthday() {
-  const { id } = useLocalSearchParams();
   const colorScheme = useColorScheme();
-  const router = useRouter();
+  const route = useRoute();
+  const navigation = useNavigation(); // Use navigation instead of router
+  const { id } = route.params;
 
   const [name, setName] = useState("");
   const [birthday, setBirthday] = useState(new Date());
@@ -69,9 +70,11 @@ export default function EditBirthday() {
   const textInputRef = useRef(null);
 
   useEffect(() => {
+    console.log("ID from params:", id); // Add this line to check the id
     const fetchBirthdayData = async () => {
       try {
         const storedItems = await AsyncStorage.getItem("birthdays");
+        console.log("Stored Items:", storedItems); // Add this line to check the fetched data
         const parsedItems = storedItems ? JSON.parse(storedItems) : [];
         const itemToEdit = parsedItems.find((item) => item.id === id);
 
@@ -86,7 +89,7 @@ export default function EditBirthday() {
           setProfileImage(itemToEdit.profileImage || null);
         } else {
           Alert.alert("Error", "Birthday not found");
-          router.back();
+          navigation.goBack(); // Use navigation to go back
         }
       } catch (error) {
         console.error("Error fetching birthday data:", error);
@@ -123,7 +126,7 @@ export default function EditBirthday() {
 
       await AsyncStorage.setItem("birthdays", JSON.stringify(updatedItems));
       Alert.alert("Success", "Birthday updated successfully");
-      router.back();
+      navigation.goBack(); // Use navigation to go back
     } catch (error) {
       console.error("Error saving edited birthday:", error);
     }
@@ -152,7 +155,7 @@ export default function EditBirthday() {
                 JSON.stringify(updatedItems)
               );
               Alert.alert("Success", "Birthday deleted successfully");
-              router.back();
+              navigation.goBack(); // Use navigation to go back
             } catch (error) {
               console.error("Error deleting birthday:", error);
             }

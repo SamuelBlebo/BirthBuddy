@@ -103,9 +103,10 @@ const UpcomingBirthdays = () => {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("EditBirthday", { id: item.id })
-              }
+              onPress={() => {
+                console.log("Navigating to EditBirthday with ID:", item.id);
+                navigation.navigate("EditBirthday", { id: item.id });
+              }}
             >
               <View
                 style={{ backgroundColor }}
