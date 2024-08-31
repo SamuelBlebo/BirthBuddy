@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Platform, Text, ScrollView, View, useColorScheme } from "react-native";
+import {
+  Platform,
+  Text,
+  FlatList,
+  ScrollView,
+  View,
+  useColorScheme,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -76,76 +83,71 @@ export default function HomeScreen() {
   const iconColor = colorScheme === "dark" ? "#fff" : "#555";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
-  return (
+  const renderHeader = () => (
+    <View className="px-5 mb-2 mt-5 pt-7">
+      <Text className="font-bold text-[35px]" style={{ color: textColor }}>
+        Upcoming
+      </Text>
+    </View>
+  );
+
+  const renderHorizontalScroll = () => (
     <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
     >
-      <View className="flex-1 justify-center items-center bg-blue-500">
-        <Text className="text-white text-lg">Hello, NativeWind!</Text>
-      </View>
-      <View className="h-[100%]">
-        <View className="px-5 mb-2 mt-5 pt-7">
-          <Text className="font-bold text-[35px] " style={{ color: textColor }}>
-            Upcoming
+      <View className="flex-1 flex-row items-center p-5 ">
+        <View
+          style={{ backgroundColor }}
+          className="w-[150px] h-[90px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
+        >
+          <Text className="font-bold text-[35px]" style={{ color: textColor }}>
+            {birthdaysInMonth}
+          </Text>
+          <Text className="text-gray-400">
+            Birthdays in {new Date().toLocaleString("en-US", { month: "long" })}
           </Text>
         </View>
-
-        <View className="h-[130px] ">
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ flexGrow: 1 }}
-          >
-            <View className="flex-1 flex-row items-center px-5 ">
-              <View
-                style={{ backgroundColor }}
-                className="w-[150px] h-[100px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
-              >
-                <Text
-                  className="font-bold text-[35px]"
-                  style={{ color: textColor }}
-                >
-                  {birthdaysInMonth}
-                </Text>
-                <Text className="text-gray-400">
-                  Birthdays in{" "}
-                  {new Date().toLocaleString("en-US", { month: "long" })}
-                </Text>
-              </View>
-              <View
-                style={{ backgroundColor }}
-                className="w-[150px] h-[100px] flex justify-center items-center rounded-[20px]  mr-4 shadow-md"
-              >
-                <Text
-                  className="font-bold text-[35px]"
-                  style={{ color: textColor }}
-                >
-                  {daysToNextBirthday}
-                </Text>
-                <Text className="text-gray-400">Days to next birthday</Text>
-              </View>
-
-              <View
-                style={{ backgroundColor }}
-                className="w-[150px] h-[100px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
-              >
-                <Ionicons
-                  name="arrow-forward"
-                  size={35}
-                  color={iconColor}
-                  onPress={() => router.push("/all")} // Navigate to the "All" tab
-                />
-                <Text className="text-gray-400">View All</Text>
-              </View>
-            </View>
-          </ScrollView>
+        <View
+          style={{ backgroundColor }}
+          className="w-[150px] h-[90px] flex justify-center items-center rounded-[20px]  mr-4 shadow-md"
+        >
+          <Text className="font-bold text-[35px]" style={{ color: textColor }}>
+            {daysToNextBirthday}
+          </Text>
+          <Text className="text-gray-400">Days to next birthday</Text>
         </View>
 
-        <UpcomingBirthdays />
-        <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+        <View
+          style={{ backgroundColor }}
+          className="w-[150px] h-[90px] flex justify-center items-center  rounded-[20px]  mr-4 shadow-md"
+        >
+          <Ionicons
+            name="arrow-forward"
+            size={35}
+            color={iconColor}
+            onPress={() => router.push("/all")} // Navigate to the "All" tab
+          />
+          <Text className="text-gray-400">View All</Text>
+        </View>
       </View>
     </ScrollView>
+  );
+
+  return (
+    <FlatList
+      ListHeaderComponent={() => (
+        <>
+          {renderHeader()}
+          {renderHorizontalScroll()}
+        </>
+      )}
+      data={[]}
+      renderItem={({ item }) => <UpcomingBirthdays />}
+      keyExtractor={(item) => item.id.toString()}
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    />
   );
 }
