@@ -70,7 +70,7 @@ export default function HomeScreen() {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <View showsVerticalScrollIndicator={false}>
       <View className="px-5 mb-2 mt-5 pt-7">
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Upcoming
@@ -128,6 +128,6 @@ export default function HomeScreen() {
 
       <UpcomingBirthdays />
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-    </ScrollView>
+    </View>
   );
 }

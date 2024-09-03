@@ -1,28 +1,19 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  useColorScheme,
-  TouchableOpacity,
-  Switch,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, Switch, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons/";
+import { useColorScheme } from "nativewind";
 
 export default function SettingsScreen() {
-  const systemColorScheme = useColorScheme();
+  const { colorScheme, toggleColorScheme } = useColorScheme();
   const [notificationEnabled, setNotificationEnabled] = useState(true);
-  const [theme, setTheme] = useState("system");
   const [syncOption, setSyncOption] = useState("icloud");
   const [privacyEnabled, setPrivacyEnabled] = useState(false);
   const [isThemePickerVisible, setThemePickerVisible] = useState(false);
   const [isSyncPickerVisible, setSyncPickerVisible] = useState(false);
 
-  const currentColorScheme = theme === "system" ? systemColorScheme : theme;
-  const textColor = currentColorScheme === "dark" ? "#fff" : "#000";
-  const backgroundColor = currentColorScheme === "dark" ? "#232628" : "#fff";
+  const textColor = colorScheme === "dark" ? "#fff" : "#000";
+  const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   const togglePicker = (picker) => {
     if (picker === "theme") {
@@ -44,11 +35,10 @@ export default function SettingsScreen() {
 
   const handleNotificationToggle = () => {
     setNotificationEnabled((prev) => !prev);
-    // Notify RootLayout or a global state management solution to handle enabling/disabling notifications
   };
 
   return (
-    <View className="h-[100%]">
+    <View className="h-[100%] dark:bg-neutral-900">
       <View className="px-5 pt-8 mb-12">
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Settings
@@ -75,47 +65,14 @@ export default function SettingsScreen() {
           style={{ backgroundColor }}
         >
           <Text className="font-bold" style={{ color: textColor }}>
-            Appearance
+            Dark Mode
           </Text>
-
-          <TouchableOpacity
-            onPress={() => togglePicker("theme")}
-            style={{ flexDirection: "row", alignItems: "center" }}
-          >
-            <Text
-              className="font-bold"
-              style={{ color: textColor, marginRight: 8 }}
-            >
-              {theme.charAt(0).toUpperCase() + theme.slice(1)}
-            </Text>
-            <Ionicons
-              name={isThemePickerVisible ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={textColor}
-            />
-          </TouchableOpacity>
+          <Switch
+            value={colorScheme == "dark"}
+            onChange={toggleColorScheme}
+            trackColor={{ true: "#6495ED" }}
+          />
         </View>
-
-        {isThemePickerVisible && (
-          <View
-            style={{
-              width: "80%",
-              marginBottom: 10,
-              borderRadius: 8,
-              backgroundColor,
-            }}
-          >
-            <Picker
-              selectedValue={theme}
-              onValueChange={(itemValue) => setTheme(itemValue)}
-              itemStyle={{ color: textColor }}
-            >
-              <Picker.Item label="System" value="system" />
-              <Picker.Item label="Light" value="light" />
-              <Picker.Item label="Dark" value="dark" />
-            </Picker>
-          </View>
-        )}
 
         <View
           className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
