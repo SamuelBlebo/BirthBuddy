@@ -3,10 +3,12 @@ import { Text, ScrollView, View, useColorScheme, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 import UpcomingBirthdays from "../components/UpcomingBirthdays";
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation(); // Use navigation hook
   const [daysToNextBirthday, setDaysToNextBirthday] = useState(0);
   const [birthdaysInMonth, setBirthdaysInMonth] = useState(0);
 
@@ -70,7 +72,7 @@ export default function HomeScreen() {
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
 
   return (
-    <View showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View className="px-5 mb-2 mt-5 pt-7">
         <Text className="font-bold text-[35px]" style={{ color: textColor }}>
           Upcoming
@@ -94,7 +96,6 @@ export default function HomeScreen() {
               {birthdaysInMonth}
             </Text>
             <Text className="text-gray-400 text-center">
-              Birthdays in{" "}
               {new Date().toLocaleString("en-US", { month: "long" })}
             </Text>
           </View>
@@ -108,7 +109,7 @@ export default function HomeScreen() {
             >
               {daysToNextBirthday}
             </Text>
-            <Text className="text-gray-400">Days to next birthday</Text>
+            <Text className="text-gray-400">Next Birthday</Text>
           </View>
 
           <View
@@ -119,7 +120,7 @@ export default function HomeScreen() {
               name="arrow-forward"
               size={32}
               color={iconColor}
-              onPress={() => router.push("/all")} // Navigate to the "All" tab
+              onPress={() => navigation.navigate("All")} // Use navigation.navigate
             />
             <Text className="text-gray-400">View All</Text>
           </View>
@@ -128,6 +129,6 @@ export default function HomeScreen() {
 
       <UpcomingBirthdays />
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-    </View>
+    </ScrollView>
   );
 }

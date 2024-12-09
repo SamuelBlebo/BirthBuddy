@@ -245,7 +245,7 @@ export default function Modal() {
               </TouchableOpacity>
             </View>
             {showDatePicker && (
-              <View className="rounded-[12px] px-4 mb-4 shadow-md ">
+              <View className="rounded-[12px] px-4 mb-4 shadow-md">
                 <DateTimePicker
                   value={birthday}
                   mode="date"
@@ -253,14 +253,19 @@ export default function Modal() {
                   minimumDate={new Date("1900-01-01")} // Set the minimum year to 1900
                   maximumDate={new Date()} // Set the maximum date to the current date
                   onChange={(event, selectedDate) => {
-                    if (selectedDate) {
+                    if (event.type === "set" && selectedDate) {
+                      // Only handle valid date selections
                       setBirthday(selectedDate);
                       setZodiacSign(getZodiacSign(selectedDate));
+                      setShowDatePicker(false); // Close the calendar
+                    } else {
+                      setShowDatePicker(false); // Close the calendar on cancel
                     }
                   }}
                 />
               </View>
             )}
+
             <View
               className="w-[90%] flex-row items-center justify-between rounded-[12px] h-[60px] px-4 mb-4 shadow-md"
               style={{ backgroundColor }}

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Platform,
   useColorScheme,
+  ScrollView,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
@@ -17,7 +18,7 @@ export default function AllScreen() {
   const iconColor = colorScheme === "dark" ? "#fff" : "#000";
   const backgroundColor = colorScheme === "dark" ? "#232628" : "#fff";
   return (
-    <View className="h-[100%]">
+    <ScrollView className="flex-1">
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
 
       <View className="px-6 pt-8">
@@ -26,7 +27,7 @@ export default function AllScreen() {
         </Text>
       </View>
       <AllBirthdays />
-    </View>
+    </ScrollView>
   );
 }
 
